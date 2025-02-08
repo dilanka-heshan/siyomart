@@ -1,0 +1,35 @@
+{
+    "projects": [
+      {
+        "id": 1,
+        "title": "Predictive Analysis of Customer Behavior",
+        "description": "Developed machine learning models to predict customer churn and purchasing patterns.",
+        "image": "/placeholder.svg?height=200&width=300"
+      },
+      {
+        "id": 2,
+        "title": "Natural Language Processing for Sentiment Analysis",
+        "description": "Created an NLP model to analyze sentiment in product reviews across various e-commerce platforms.",
+        "image": "/placeholder.svg?height=200&width=300"
+      },
+      {
+        "id": 3,
+        "title": "Big Data Analytics for Supply Chain Optimization",
+        "description": "Utilized big data technologies to optimize supply chain processes and reduce costs.",
+        "image": "/placeholder.svg?height=200&width=300"
+      },
+      {
+        "id": 4,
+        "title": "Time Series Forecasting for Financial Markets",
+        "description": "Implemented advanced time series models to forecast stock prices and market trends.",
+        "image": "/placeholder.svg?height=200&width=300"
+      },
+      {
+        "id": 5,
+        "title": "Computer Vision for Quality Control",
+        "description": "Developed a computer vision system for automated quality control in manufacturing processes.",
+        "image": "/placeholder.svg?height=200&width=300"
+      }
+    ]
+  }
+  
