@@ -1,30 +1,38 @@
-"use client";
+'use client'
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { HeartIcon, ShareIcon } from '@heroicons/react/24/outline';
-import { HeartIcon as SolidHeartIcon } from '@heroicons/react/24/solid';
-import { useSession } from 'next-auth/react';
-import toast from 'react-hot-toast';
+import { useState } from 'react'
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
+import { toast } from 'react-hot-toast'
+import { Heart, Share2 } from 'lucide-react'
+import { Button } from '@/app/components/ui/Button'
+import { Loader } from '@/app/components/ui/Loader'
+import { LoginPrompt } from '@/app/components/auth/LoginPrompt'
+import { useCart } from '@/app/providers/CartProvider'
 
-
+// Product interface
+interface Product {
+  _id: string;
+  name: string;
+  description: string;
+  price: number;
+  stock: number;
+  images: string[];
+  // add other fields as needed
+}
 
 interface ProductActionsProps {
-  product: {
-    _id: string;
-    name: string;
-    price: number;
-    stock: number;
-    images: string[];
-  };
+  product: Product;
 }
 
 export default function ProductActions({ product }: ProductActionsProps) {
   const [quantity, setQuantity] = useState(1);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [isInWishlist, setIsInWishlist] = useState(false);
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const { data: session } = useSession();
   const router = useRouter();
+  const { addToCart } = useCart();
   
   // Handle quantity change
   const handleQuantityChange = (value: number) => {
@@ -35,8 +43,7 @@ export default function ProductActions({ product }: ProductActionsProps) {
   // Add to cart handler
   const handleAddToCart = async () => {
     if (!session) {
-      toast.error("Please log in to add items to your cart");
-      router.push('/login');
+      setShowLoginPrompt(true);
       return;
     }
     
@@ -48,25 +55,13 @@ export default function ProductActions({ product }: ProductActionsProps) {
     setIsAddingToCart(true);
     
     try {
-      // Add to cart API call would go here
-      const res = await fetch('/api/cart/add', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          productId: product._id,
-          quantity,
-        }),
-      });
+      const success = await addToCart(product._id, quantity);
       
-      if (!res.ok) {
-        throw new Error('Failed to add to cart');
+      if (success) {
+        toast.success(`Added ${product.name} to your cart`);
+        // Refresh router to update cart count in navbar
+        router.refresh();
       }
-      
-      toast.success(`Added ${product.name} to your cart`);
-      // Refresh router to update cart count in navbar
-      router.refresh();
     } catch (error) {
       toast.error("Failed to add to cart. Please try again.");
     } finally {
@@ -77,8 +72,7 @@ export default function ProductActions({ product }: ProductActionsProps) {
   // Buy now handler
   const handleBuyNow = async () => {
     if (!session) {
-      toast.error("Please log in to proceed");
-      router.push('/login');
+      setShowLoginPrompt(true);
       return;
     }
     
@@ -89,9 +83,12 @@ export default function ProductActions({ product }: ProductActionsProps) {
     
     try {
       // Add to cart first
-      await handleAddToCart();
-      // Then redirect to checkout
-      router.push('/cart?checkout=true');
+      const success = await addToCart(product._id, quantity);
+      
+      if (success) {
+        // Then redirect to checkout
+        router.push('/cart?checkout=true');
+      }
     } catch (error) {
       toast.error("Something went wrong. Please try again.");
     }
@@ -100,8 +97,7 @@ export default function ProductActions({ product }: ProductActionsProps) {
   // Toggle wishlist handler
   const handleToggleWishlist = async () => {
     if (!session) {
-      toast.error("Please log in to add items to your wishlist");
-      router.push('/login');
+      setShowLoginPrompt(true);
       return;
     }
     
@@ -127,31 +123,23 @@ export default function ProductActions({ product }: ProductActionsProps) {
       }
       
       setIsInWishlist(!isInWishlist);
-      toast.success(isInWishlist 
-        ? `Removed ${product.name} from your wishlist`
-        : `Added ${product.name} to your wishlist`
-      );
+      toast.success(isInWishlist ? 'Removed from wishlist' : 'Added to wishlist');
     } catch (error) {
-      toast.error("Failed to update wishlist. Please try again.");
+      toast.error('Failed to update wishlist');
     }
   };
   
   // Share product handler
-  const handleShareProduct = async () => {
+  const handleShareProduct = () => {
     const url = window.location.href;
     
     if (navigator.share) {
-      try {
-        await navigator.share({
-          title: product.name,
-          text: `Check out ${product.name} on SiyoMart!`,
-          url: url
-        });
-      } catch (error) {
-        console.error("Error sharing:", error);
-      }
+      navigator.share({
+        title: product.name,
+        text: `Check out ${product.name} on SiyoMart!`,
+        url: url,
+      });
     } else {
-      // Fallback to copying link
       navigator.clipboard.writeText(url);
       toast.success("Link copied to clipboard!");
     }
@@ -159,6 +147,14 @@ export default function ProductActions({ product }: ProductActionsProps) {
   
   return (
     <div className="space-y-6">
+      {/* Login prompt modal */}
+      <LoginPrompt 
+        isOpen={showLoginPrompt} 
+        onClose={() => setShowLoginPrompt(false)}
+        title="Login Required"
+        description="Please login to add items to your cart"
+      />
+      
       {/* Quantity Selector */}
       <div className="flex items-center space-x-3">
         <span className="text-gray-700">Quantity:</span>
@@ -186,47 +182,47 @@ export default function ProductActions({ product }: ProductActionsProps) {
             +
           </button>
         </div>
+        <span className="text-sm text-gray-500">
+          {product.stock} available
+        </span>
       </div>
       
-      {/* Action Buttons */}
-      <div className="flex flex-col sm:flex-row gap-3">
-        <button
+      {/* Add to Cart Button */}
+      <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2">
+        <Button 
           onClick={handleAddToCart}
           disabled={isAddingToCart || product.stock <= 0}
-          className="flex-1 bg-amber-600 hover:bg-amber-700 text-white font-medium py-2 px-4 rounded-md transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+          variant="outline" 
+          className="flex-1"
         >
-          {isAddingToCart ? "Adding..." : "Add to Cart"}
-        </button>
+          {isAddingToCart ? <Loader className="h-5 w-5" /> : 'Add to Cart'}
+        </Button>
         
-        <button
+        <Button 
           onClick={handleBuyNow}
-          disabled={product.stock <= 0}
-          className="flex-1 bg-amber-800 hover:bg-amber-900 text-white font-medium py-2 px-4 rounded-md transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={isAddingToCart || product.stock <= 0}
+          className="flex-1"
         >
           Buy Now
-        </button>
+        </Button>
       </div>
       
       {/* Wishlist and Share */}
-      <div className="flex gap-4 pt-2">
+      <div className="flex space-x-4">
         <button
           onClick={handleToggleWishlist}
-          className="flex items-center gap-1.5 text-gray-700 hover:text-amber-600"
+          className="flex items-center text-sm text-gray-600 hover:text-amber-600"
         >
-          {isInWishlist ? (
-            <SolidHeartIcon className="h-5 w-5 text-red-500" />
-          ) : (
-            <HeartIcon className="h-5 w-5" />
-          )}
-          <span>Save to Wishlist</span>
+          <Heart size={18} className={`mr-1 ${isInWishlist ? 'fill-amber-600 text-amber-600' : ''}`} />
+          {isInWishlist ? 'Saved' : 'Add to Wishlist'}
         </button>
         
         <button
           onClick={handleShareProduct}
-          className="flex items-center gap-1.5 text-gray-700 hover:text-amber-600"
+          className="flex items-center text-sm text-gray-600 hover:text-amber-600"
         >
-          <ShareIcon className="h-5 w-5" />
-          <span>Share</span>
+          <Share2 size={18} className="mr-1" />
+          Share
         </button>
       </div>
     </div>
