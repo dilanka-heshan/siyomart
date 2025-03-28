@@ -1,0 +1,72 @@
+siyomart/
+├── app/                      # Next.js App Router
+│   ├── (auth)/               # Authentication routes
+│   ├── (dashboard)/          # Dashboard routes (admin/operator)
+│   ├── (shop)/               # Main shopping experience
+│   ├── api/                  # API routes
+│   ├── components/           # Shared components
+│   ├── lib/                  # Utility functions
+│   ├── models/               # MongoDB models
+│   ├── providers/            # Context providers
+│   └── styles/               # Global styles
+├── public/                   # Static assets
+├── middleware.ts             # Next.js middleware for auth/routing
+├── next.config.js            # Next.js configuration
+├── package.json              # Dependencies
+└── tsconfig.json             # TypeScript configuration
+
+
+Implementation Plan
+Phase 1: Project Setup & Authentication (2 weeks)
+    Project Initialization
+        Set up Next.js with TypeScript
+        Configure MongoDB connection
+        Set up authentication with NextAuth.js
+        Create basic layout and navigation
+    User Authentication
+        Implement registration/login flows
+        Set up role-based access control
+        Create user profile management
+
+Phase 2: Core Product Features (3 weeks)
+    Product Management
+        Create product models and schemas
+        Implement product listing, filtering, and search
+        Build product detail pages
+        Set up image upload with Cloudinary
+    Shopping Experience
+        Implement shopping cart functionality
+        Create wishlist and favorites
+        Build category navigation
+
+Phase 3: Order & Payment Processing (2 weeks)
+    Checkout Process
+        Build checkout flow
+        Implement address management
+        Set up Stripe payment integration
+        Create order confirmation
+    Order Management
+        Build order tracking system
+        Implement order history
+        Create notification system
+
+Phase 4: Admin & Operator Dashboards (3 weeks)
+    Admin Dashboard
+        Create analytics dashboard
+        Build user management interface
+        Implement product approval workflow
+        Set up reporting tools
+    Operator Dashboard
+        Build order management interface
+        Create product management tools
+        Implement inventory tracking
+        
+Phase 5: Advanced Features & Optimization (2 weeks)
+    AI Chatbot Integration
+        Implement DeepSeek API integration
+        Create customer support flows
+        Build product recommendation engine
+    Performance & SEO
+        Optimize loading performance
+        Implement SEO best practices
+        Add responsive design improvements
