@@ -4,6 +4,7 @@ import ProductImageGallery from '@/app/products/_components/ProductImageGallery'
 import ProductInfo from '@/app/products/_components/ProductInfo';
 import ProductActions from '@/app/products/_components/ProductActions';
 import ProductTabs from '@/app/products/_components/ProductTabs';
+import ProductStory from '@/app/products/_components/ProductStory'; // Add this import
 import RelatedProducts from '@/app/products/_components/RelatedProducts';
 import RecentlyViewed from '@/app/products/_components/RecentlyViewed';
 import ShippingInfo from '@/app/products/_components/ShippingInfo';
@@ -79,6 +80,8 @@ export default async function ProductPage({ params }: { params: { id: string } }
             <SellerInfo seller={safeProduct.OperatorId} />
           </div>
         </div>
+
+        <ProductStory productId={safeProduct._id} />
 
         <ProductTabs product={safeProduct} />
         <RelatedProducts categoryId={safeProduct.categoryId} currentProductId={safeProduct._id} />

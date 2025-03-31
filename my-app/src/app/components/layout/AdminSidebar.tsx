@@ -15,6 +15,7 @@ export default function AdminSidebar() {
   const menuItems = [
     { name: 'Dashboard', icon: <Home className="h-5 w-5" />, href: '/dashboard/admin' },
     { name: 'Products', icon: <Package className="h-5 w-5" />, href: '/dashboard/admin/products' },
+    { name: 'Stories', icon: <Package className="h-5 w-5" />, href: '/dashboard/admin/stories' },
     { name: 'Users', icon: <Users className="h-5 w-5" />, href: '/dashboard/admin/users' },
     { name: 'Orders', icon: <ShoppingCart className="h-5 w-5" />, href: '/dashboard/admin/orders' },
     { name: 'Categories', icon: <Tag className="h-5 w-5" />, href: '/dashboard/admin/categories' },
