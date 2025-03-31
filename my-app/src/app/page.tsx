@@ -139,9 +139,8 @@ export default async function Home() {
             <div>
               <h2 className="text-3xl font-bold mb-6">Our Story</h2>
               <p className="text-gray-700 mb-6">
-                SiyoMart connects skilled Sri Lankan artisans with customers worldwide who appreciate authentic handmade products. 
-                We believe in preserving traditional craftsmanship while providing sustainable livelihoods for our artisan partners.
-              </p>
+              SiyoMart was born from a passion for Sri Lanka’s rich heritage and the artisans who keep it alive. We bridge the gap between skilled local craftsmen and a global audience that cherishes authenticity. Every handmade piece carries a story—a story of tradition, culture, and the artisans who pour their hearts into their work. By choosing SiyoMart, you are not just buying a product; you are preserving heritage and empowering communities.
+               </p>
               <p className="text-gray-700 mb-6">
                 Each product tells a story of cultural heritage, passed down through generations and crafted with meticulous attention to detail.
               </p>

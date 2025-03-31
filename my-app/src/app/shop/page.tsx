@@ -38,15 +38,22 @@ export default async function ShopPage({
     }
   }
 
+  // Construct the page title based on search parameters
+  let pageTitle = searchParams.search 
+    ? `Search: ${searchParams.search}` 
+    : searchParams.category 
+      ? categoryName 
+      : 'Discover Our Products';
+
   return (
     <div className="container mx-auto px-4 py-8">
       <CategoryBreadcrumb categorySlug={searchParams.category} />
       
       <h1 className="text-3xl font-bold mb-2">
-        {searchParams.category ? categoryName : 'Discover Our Products'}
+        {pageTitle}
       </h1>
       
-      {searchParams.category && (
+      {searchParams.category && !searchParams.search && (
         <div className="mb-6">
           <p className="text-gray-600">Browse our collection of {categoryName.toLowerCase()}</p>
         </div>

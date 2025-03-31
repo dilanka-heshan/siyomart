@@ -6,12 +6,14 @@ import Image from 'next/image'
 import { useSession, signOut } from 'next-auth/react'
 import { Menu, X, Search, User, LogOut, ShoppingBag, Heart } from 'lucide-react'
 import CartIcon from './CartIcon'
+import { useRouter } from 'next/navigation'
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const { data: session } = useSession()
+  const router = useRouter()
 
   // Check scroll position for styling
   useEffect(() => {
@@ -25,8 +27,13 @@ export default function Header() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
-    // Handle search logic here
-    console.log('Searching for:', searchQuery)
+
+    if (searchQuery.trim()) {
+      // Navigate to shop page with search params
+      router.push(`/shop?search=${encodeURIComponent(searchQuery.trim())}`)
+      setSearchQuery('') // Clear the search input after submission
+      setIsMenuOpen(false) // Close mobile menu if open
+    }
   }
 
   return (
@@ -127,6 +134,12 @@ export default function Header() {
                 className="w-full py-2 pl-10 pr-4 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-amber-500"
               />
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+              <button 
+                type="submit" 
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-amber-500 text-white px-3 py-1 rounded text-sm"
+              >
+                Search
+              </button>
             </form>
 
             <nav className="space-y-3">

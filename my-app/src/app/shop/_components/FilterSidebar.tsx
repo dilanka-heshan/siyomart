@@ -33,6 +33,9 @@ export default function FilterSidebar() {
     max: searchParams.get('maxPrice') ? parseInt(searchParams.get('maxPrice') as string) : 10000
   });
   const [ratings, setRatings] = useState<number[]>([]);
+  
+  // Get the current search term
+  const searchTerm = searchParams.get('search') || '';
 
   useEffect(() => {
     // Fetch categories when component mounts
@@ -73,9 +76,14 @@ export default function FilterSidebar() {
   // Update URL params when filters change
   const updateFilters = (newParams: Record<string, string | null>) => {
     const params = new URLSearchParams(searchParams.toString());
-
+    
     // Reset to page 1 when filters change
     params.set('page', '1');
+    
+    // Preserve search term if it exists
+    if (searchTerm) {
+      params.set('search', searchTerm);
+    }
 
     // Update or remove params
     Object.entries(newParams).forEach(([key, value]) => {
@@ -95,7 +103,13 @@ export default function FilterSidebar() {
     setSelectedCategory(null);
     setPriceRange({ min: 0, max: 100000 });
     setRatings([]);
-    router.replace('/shop', { scroll: false });
+    
+    // Keep only search term if it exists
+    if (searchTerm) {
+      router.replace(`/shop?search=${encodeURIComponent(searchTerm)}`, { scroll: false });
+    } else {
+      router.replace('/shop', { scroll: false });
+    }
   };
 
   // Add a method to clear category filter specifically
@@ -103,6 +117,10 @@ export default function FilterSidebar() {
     setSelectedCategory(null);
     const params = new URLSearchParams(searchParams.toString());
     params.delete('category');
+    
+    // Reset to page 1
+    params.set('page', '1');
+    
     router.replace(`/shop?${params.toString()}`, { scroll: false });
   };
 
@@ -120,6 +138,31 @@ export default function FilterSidebar() {
         </div>
         <div className="h-px bg-gray-200 my-4"></div>
       </div>
+      
+      {/* Add a section to show current search and ability to clear it */}
+      {searchTerm && (
+        <div className="mb-6 border-b border-gray-200 pb-4">
+          <div className="flex justify-between items-center">
+            <h3 className="font-medium">Current Search</h3>
+            <button 
+              onClick={() => {
+                const params = new URLSearchParams(searchParams.toString());
+                params.delete('search');
+                router.replace(`/shop?${params.toString()}`, { scroll: false });
+              }}
+              className="text-xs text-amber-600 hover:text-amber-800 flex items-center"
+            >
+              <XCircle size={14} className="mr-1" />
+              Clear
+            </button>
+          </div>
+          <div className="mt-2">
+            <span className="bg-amber-100 text-amber-800 py-1 px-2 rounded text-sm">
+              "{searchTerm}"
+            </span>
+          </div>
+        </div>
+      )}
       
       {/* Category filter with active indicator */}
       <div className="mb-6">
@@ -207,6 +250,7 @@ export default function FilterSidebar() {
       {/* Apply filters button for mobile */}
       <div className="md:hidden">
         <button
+          onClick={() => router.replace(`/shop?${new URLSearchParams(searchParams.toString())}`, { scroll: false })}
           className="w-full bg-amber-600 hover:bg-amber-700 text-white py-2 rounded-md transition-colors"
         >
           Apply Filters

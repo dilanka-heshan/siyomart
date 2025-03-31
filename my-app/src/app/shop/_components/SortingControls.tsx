@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Grid2X2, List, SlidersHorizontal } from 'lucide-react';
+import { Grid, List, SlidersHorizontal } from 'lucide-react';
 
 export default function SortingControls() {
   const router = useRouter();
@@ -19,7 +19,7 @@ export default function SortingControls() {
     const newSort = event.target.value;
     setSortOption(newSort);
     
-    // Update URL
+    // Update URL while preserving other parameters
     const params = new URLSearchParams(searchParams.toString());
     params.set('sort', newSort);
     router.push(`/shop?${params.toString()}`);
@@ -34,56 +34,59 @@ export default function SortingControls() {
   const toggleFilterVisibility = () => {
     setIsFilterVisible(!isFilterVisible);
   };
-  
+
   return (
-    <div className="flex flex-col sm:flex-row justify-between items-center mb-6 bg-white p-4 rounded-lg shadow-sm">
-      {/* Mobile filter toggle */}
-      <button 
-        className="flex items-center sm:hidden mb-4 sm:mb-0 text-sm text-gray-600"
-        onClick={toggleFilterVisibility}
-      >
-        <SlidersHorizontal size={16} className="mr-2" />
-        Filters
-      </button>
-      
-      {/* Sort by dropdown */}
-      <div className="flex-1 w-full sm:w-auto">
-        <div className="flex items-center">
-          <label htmlFor="sort" className="mr-2 text-sm text-gray-600">
-            Sort by:
-          </label>
-          <select
-            id="sort"
-            value={sortOption}
-            onChange={handleSortChange}
-            className="bg-white border border-gray-300 text-gray-700 py-1 px-2 pr-8 rounded leading-tight focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm"
+    <div className="mb-6">
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between pb-4 border-b border-gray-200">
+        <div className="flex items-center mb-4 md:mb-0">
+          <button 
+            onClick={() => toggleFilterVisibility()}
+            className="md:hidden flex items-center mr-4 text-sm text-gray-600"
           >
-            <option value="createdAt_desc">Newest</option>
-            <option value="createdAt_asc">Oldest</option>
-            <option value="price_asc">Price: Low to High</option>
-            <option value="price_desc">Price: High to Low</option>
-            <option value="rating_desc">Best Rating</option>
-          </select>
+            <SlidersHorizontal className="h-4 w-4 mr-1" />
+            Filters
+          </button>
+          
+          <p className="text-gray-500 text-sm">
+            Showing <span className="font-medium">{searchParams.get('page') || '1'}</span> 
+            {searchParams.get('search') && 
+              <span> • Search: <span className="font-medium">{searchParams.get('search')}</span></span>
+            }
+          </p>
         </div>
-      </div>
-      
-      {/* View mode toggle */}
-      <div className="flex items-center mt-4 sm:mt-0">
-        <span className="text-sm text-gray-600 mr-2">View:</span>
-        <button 
-          className={`p-1 rounded ${viewMode === 'grid' ? 'bg-amber-100 text-amber-600' : 'bg-white text-gray-600'}`}
-          onClick={() => toggleViewMode('grid')}
-          aria-label="Grid view"
-        >
-          <Grid2X2 size={16} />
-        </button>
-        <button 
-          className={`p-1 rounded ml-2 ${viewMode === 'list' ? 'bg-amber-100 text-amber-600' : 'bg-white text-gray-600'}`}
-          onClick={() => toggleViewMode('list')}
-          aria-label="List view"
-        >
-          <List size={16} />
-        </button>
+        
+        <div className="flex items-center">
+          <div className="mr-4">
+            <select
+              value={sortOption}
+              onChange={handleSortChange}
+              className="py-1 px-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
+            >
+              <option value="createdAt_desc">Newest First</option>
+              <option value="createdAt_asc">Oldest First</option>
+              <option value="price_asc">Price: Low to High</option>
+              <option value="price_desc">Price: High to Low</option>
+              <option value="rating_desc">Highest Rated</option>
+            </select>
+          </div>
+          
+          <div className="flex border border-gray-300 rounded-md">
+            <button
+              onClick={() => toggleViewMode('grid')}
+              className={`p-1 ${viewMode === 'grid' ? 'bg-amber-100 text-amber-600' : 'text-gray-500'}`}
+              title="Grid View"
+            >
+              <Grid className="h-5 w-5" />
+            </button>
+            <button
+              onClick={() => toggleViewMode('list')}
+              className={`p-1 ${viewMode === 'list' ? 'bg-amber-100 text-amber-600' : 'text-gray-500'}`}
+              title="List View"
+            >
+              <List className="h-5 w-5" />
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

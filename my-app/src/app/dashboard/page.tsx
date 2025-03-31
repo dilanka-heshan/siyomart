@@ -155,11 +155,11 @@ export default function Dashboard() {
         </Link>
         
         {session?.user.role === 'admin' && (
-          <Link href="/admin/orders" className="bg-white p-6 rounded-lg shadow border border-gray-200 hover:shadow-md transition-shadow">
+          <Link href="/dashboard/admin" className="bg-white p-6 rounded-lg shadow border border-gray-200 hover:shadow-md transition-shadow">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="font-medium text-gray-800">Admin Orders</h2>
-                <p className="text-sm text-gray-500 mt-1">Manage all customer orders</p>
+                <h2 className="font-medium text-gray-800">Admin Panel</h2>
+                <p className="text-sm text-gray-500 mt-1">Manage all customer services</p>
               </div>
               <Users className="h-8 w-8 text-amber-600" />
             </div>

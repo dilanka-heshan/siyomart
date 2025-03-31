@@ -11,6 +11,7 @@ interface PaginationProps {
 export default function Pagination({ currentPage, totalPages }: PaginationProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
+
   
   if (totalPages <= 1) {
     return null; // Don't show pagination if there's only one page

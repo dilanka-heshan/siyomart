@@ -1,41 +1,61 @@
+import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { formatPrice } from '@/lib/utils';
 
-type ProductCardProps = {
+interface ProductCardProps {
   _id: string;
   name: string;
   price: number;
   images: string[];
   rating?: {
-    value: number;
+    value: number | string | undefined;
   };
-};
+}
 
 export default function ProductCard({ _id, name, price, images, rating }: ProductCardProps) {
+  // Format the rating safely
+  const formattedRating = (): string => {
+    if (!rating || rating.value === undefined) return '';
+    
+    if (typeof rating.value === 'number') {
+      return rating.value.toFixed(1);
+    }
+    
+    return String(rating.value);
+  };
+
   return (
-    <Link href={`/products/${_id}`} className="group">
-      <div className="h-80 bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-all duration-300">
-        <div className="relative h-48">
-          <Image
-            src={images[0] || '/placeholder.jpg'}
-            alt={name}
-            fill
-            className="object-cover group-hover:scale-105 transition-transform duration-500"
-          />
+    <div className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+      <Link href={`/products/${_id}`}>
+        <div className="relative h-52 w-full">
+          {images && images.length > 0 ? (
+            <Image
+              src={images[0]}
+              alt={name}
+              fill
+              sizes="(max-width: 768px) 100vw, 33vw"
+              priority
+              className="object-cover"
+            />
+          ) : (
+            <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+              <span className="text-gray-400">No image</span>
+            </div>
+          )}
         </div>
         <div className="p-4">
-          <h3 className="font-medium text-lg truncate">{name}</h3>
-          <div className="flex justify-between items-center mt-2">
-            <p className="text-amber-600 font-bold">Rs. {price.toLocaleString()}</p>
-            {rating && (
-              <div className="flex items-center">
-                <span className="text-amber-500">★</span>
-                <span className="ml-1">{rating.value.toFixed(1)}</span>
-              </div>
-            )}
-          </div>
+          <h3 className="text-sm font-medium text-gray-800 truncate">{name}</h3>
+          <p className="text-amber-600 font-medium mt-1">{formatPrice(price)}</p>
+          
+          {rating && rating.value !== undefined && (
+            <div className="flex items-center mt-1">
+              <span className="text-amber-500">★</span>
+              <span className="ml-1 text-sm text-gray-600">{formattedRating()}</span>
+            </div>
+          )}
         </div>
-      </div>
-    </Link>
+      </Link>
+    </div>
   );
 }
