@@ -2,40 +2,41 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Button } from '@/app/components/ui/Button'
-import { Loader } from '@/app/components/ui/Loader'
 import { formatPrice } from '@/lib/utils'
+import PlaceOrderButton from './PlaceOrderButton'
+
+interface CartItem {
+  _id: string;
+  productId: {
+    _id: string;
+    name: string;
+    images: string[];
+    price: number;
+    stock: number;
+  };
+  quantity: number;
+  price: number;
+  subtotal: number;
+}
+
+interface Cart {
+  _id: string;
+  userId: string;
+  items: CartItem[];
+  cartTotal: number;
+  itemCount: number;
+}
 
 interface CartSummaryProps {
-  cart: {
-    cartTotal: number
-    itemCount: number
-  }
+  cart: Cart;
 }
 
 export default function CartSummary({ cart }: CartSummaryProps) {
-  const [isCheckingOut, setIsCheckingOut] = useState(false)
-  const router = useRouter()
-  
   // Calculate shipping, tax and total
   const shipping = 350; // Fixed shipping fee
   const taxRate = 0.08; // 8% tax rate
   const taxAmount = cart.cartTotal * taxRate;
   const orderTotal = cart.cartTotal + shipping + taxAmount;
-  
-  const handleCheckout = async () => {
-    setIsCheckingOut(true)
-    
-    try {
-      // In a real app, this would initialize the checkout process
-      // For now, just redirect to a checkout page
-      router.push('/checkout');
-    } catch (error) {
-      console.error('Error starting checkout:', error)
-    } finally {
-      setIsCheckingOut(false)
-    }
-  }
   
   return (
     <div className="bg-gray-50 rounded-lg p-6 border border-gray-200 sticky top-24">
@@ -65,13 +66,7 @@ export default function CartSummary({ cart }: CartSummaryProps) {
         </div>
       </div>
       
-      <Button
-        onClick={handleCheckout}
-        disabled={isCheckingOut}
-        className="w-full mt-6"
-      >
-        {isCheckingOut ? <Loader className="h-5 w-5" /> : 'Proceed to Checkout'}
-      </Button>
+      <PlaceOrderButton className="w-full mt-6" />
       
       <div className="mt-4 text-xs text-gray-500">
         <p>* Shipping costs calculated for delivery within Sri Lanka.</p>
