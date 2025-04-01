@@ -24,6 +24,11 @@ export async function middleware(request: NextRequest) {
     secret: process.env.NEXTAUTH_SECRET 
   })
 
+  // Protect wishlist routes
+  if (path.startsWith('/wishlist') && !token) {
+    return NextResponse.redirect(new URL('/login', request.url))
+  }
+
   // If user is authenticated, allow access
   if (token) {
     // For role-specific paths, check roles

@@ -9,6 +9,7 @@ import { Button } from '@/app/components/ui/Button'
 import { Loader } from '@/app/components/ui/Loader'
 import { LoginPrompt } from '@/app/components/auth/LoginPrompt'
 import { useCart } from '@/app/providers/CartProvider'
+import { useWishlist } from '@/app/providers/WishlistProvider'
 
 // Product interface
 interface Product {
@@ -28,11 +29,14 @@ interface ProductActionsProps {
 export default function ProductActions({ product }: ProductActionsProps) {
   const [quantity, setQuantity] = useState(1);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
-  const [isInWishlist, setIsInWishlist] = useState(false);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const { data: session } = useSession();
   const router = useRouter();
   const { addToCart } = useCart();
+  const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
+  
+  // Check if the product is in the wishlist
+  const productInWishlist = isInWishlist(product._id);
   
   // Handle quantity change
   const handleQuantityChange = (value: number) => {
@@ -102,28 +106,19 @@ export default function ProductActions({ product }: ProductActionsProps) {
     }
     
     try {
-      // Toggle wishlist API call
-      const endpoint = isInWishlist 
-        ? `/api/wishlist/remove/${product._id}` 
-        : '/api/wishlist/add';
-        
-      const method = isInWishlist ? 'DELETE' : 'POST';
-      const body = isInWishlist ? undefined : JSON.stringify({ productId: product._id });
+      let success;
       
-      const res = await fetch(endpoint, {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body,
-      });
-      
-      if (!res.ok) {
-        throw new Error('Failed to update wishlist');
+      if (productInWishlist) {
+        success = await removeFromWishlist(product._id);
+      } else {
+        success = await addToWishlist(product._id);
       }
       
-      setIsInWishlist(!isInWishlist);
-      toast.success(isInWishlist ? 'Removed from wishlist' : 'Added to wishlist');
+      if (success) {
+        toast.success(productInWishlist 
+          ? 'Removed from wishlist' 
+          : 'Added to wishlist');
+      }
     } catch (error) {
       toast.error('Failed to update wishlist');
     }
@@ -213,8 +208,11 @@ export default function ProductActions({ product }: ProductActionsProps) {
           onClick={handleToggleWishlist}
           className="flex items-center text-sm text-gray-600 hover:text-amber-600"
         >
-          <Heart size={18} className={`mr-1 ${isInWishlist ? 'fill-amber-600 text-amber-600' : ''}`} />
-          {isInWishlist ? 'Saved' : 'Add to Wishlist'}
+          <Heart 
+            size={18} 
+            className={`mr-1 ${productInWishlist ? 'fill-amber-600 text-amber-600' : ''}`} 
+          />
+          {productInWishlist ? 'Saved' : 'Add to Wishlist'}
         </button>
         
         <button
