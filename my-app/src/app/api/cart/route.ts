@@ -26,7 +26,11 @@ export async function GET() {
         itemCount: 0 
       });
     }
-    
+
+    // Ensure itemCount is calculated correctly
+    cart.itemCount = cart.items.reduce((count: number, item: any) => count + item.quantity, 0);
+
+    console.log('Cart fetched successfully:', cart); // Debug log
     return NextResponse.json(cart);
   } catch (error) {
     console.error('Error fetching cart:', error);

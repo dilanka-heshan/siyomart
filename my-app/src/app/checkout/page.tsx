@@ -6,14 +6,37 @@ import { useSession } from 'next-auth/react'
 import { useCart } from '@/app/providers/CartProvider'
 import { Button } from '@/app/components/ui/Button'
 import { Loader } from '@/app/components/ui/Loader'
-import { Input } from '@/app/components/ui/Input'  // Fixed import
+import { Input } from '@/app/components/ui/Input'
 import { formatPrice } from '@/lib/utils'
 import toast from 'react-hot-toast'
 
 export default function CheckoutPage() {
-  const { cart, clearCart } = useCart()
+  const { cart, loading: cartLoading, fetchCart, clearCart } = useCart()
   const { data: session, status } = useSession()
   const router = useRouter()
+  
+  // Force fetch cart data when page loads
+  useEffect(() => {
+    if (session && fetchCart && !cart) {
+      console.log('Fetching cart data on page load'); // Debug log
+      fetchCart();
+    }
+  }, [session, fetchCart, cart]);
+  
+  // Listen for cart update events
+  useEffect(() => {
+    const handleCartUpdate = () => {
+      if (session && fetchCart) {
+        console.log('Cart updated event received, fetching cart'); // Debug log
+        fetchCart();
+      }
+    }
+    
+    window.addEventListener('cart-updated', handleCartUpdate)
+    return () => {
+      window.removeEventListener('cart-updated', handleCartUpdate)
+    }
+  }, [session, fetchCart])
   
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [shippingMethod, setShippingMethod] = useState('Standard')
@@ -57,12 +80,12 @@ export default function CheckoutPage() {
   
   // Redirect to home if cart is empty
   useEffect(() => {
-    if (cart && cart.items.length === 0 && status !== 'loading') {
-      toast.error('Your cart is empty')
-      router.push('/shop')
+    if (cart && cart.items && cart.items.length === 0 && !cartLoading && status === 'authenticated') {
+      toast.error('Your cart is empty');
+      router.push('/shop');
     }
-  }, [cart, status, router])
-  
+  }, [cart, cartLoading, status, router])
+
   // Handle form input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
@@ -206,11 +229,23 @@ export default function CheckoutPage() {
     }
   }
   
-  // Handle loading state
-  if (status === 'loading') {
+  // Handle loading state - now checks for both session and cart loading
+  if (status === 'loading' || cartLoading) {
     return (
       <div className="container mx-auto px-4 py-8 flex justify-center items-center min-h-[60vh]">
         <Loader className="h-8 w-8 text-amber-600" />
+      </div>
+    )
+  }
+  
+  // Verify we have cart data before rendering the checkout form
+  if (!cart || !cart.items) {
+    return (
+      <div className="container mx-auto px-4 py-8 flex justify-center items-center min-h-[60vh]">
+        <div className="text-center">
+          <Loader className="h-8 w-8 text-amber-600 mx-auto mb-4" />
+          <p className="text-gray-600">Loading your cart...</p>
+        </div>
       </div>
     )
   }

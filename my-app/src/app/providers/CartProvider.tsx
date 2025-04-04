@@ -39,6 +39,7 @@ interface CartContextType {
   removeCartItem: (itemId: string) => Promise<boolean>
   clearCart: () => Promise<boolean>
   showLoginPrompt: () => void
+  fetchCart: () => Promise<void> // Add fetchCart to the context type
 }
 
 const CartContext = createContext<CartContextType>({
@@ -48,7 +49,8 @@ const CartContext = createContext<CartContextType>({
   updateCartItem: async () => false,
   removeCartItem: async () => false,
   clearCart: async () => false,
-  showLoginPrompt: () => {}
+  showLoginPrompt: () => {},
+  fetchCart: async () => {} // Add default implementation
 })
 
 export const useCart = () => useContext(CartContext)
@@ -68,109 +70,144 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }, [session])
   
-  const fetchCart = async () => {
-    if (!session) return
-    
-    try {
-      setLoading(true)
-      const res = await fetch('/api/cart')
-      
-      if (!res.ok) {
-        throw new Error('Failed to fetch cart')
-      }
-      
-      const data = await res.json()
-      setCart(data)
-    } catch (error) {
-      console.error('Error fetching cart:', error)
-      toast.error('Failed to load your cart')
-    } finally {
-      setLoading(false)
+  const fetchCart = async (forceRefresh = false) => {
+    if (!session) {
+      console.log('Skipping fetchCart: no session'); // Debug log
+      return;
     }
-  }
+
+    if (!forceRefresh && cart) {
+      console.log('Skipping fetchCart: cart already exists and no forceRefresh'); // Debug log
+      return;
+    }
+
+    try {
+      setLoading(true);
+      console.log('Fetching cart data from API'); // Debug log
+      const res = await fetch('/api/cart');
+
+      if (!res.ok) {
+        throw new Error('Failed to fetch cart');
+      }
+
+      const data = await res.json();
+      setCart(data); // Update cart state
+      console.log('Cart data fetched successfully:', data); // Debug log
+      console.log('Updated item count:', data.itemCount); // Debug log
+    } catch (error) {
+      console.error('Error fetching cart:', error);
+      toast.error('Failed to load your cart');
+    } finally {
+      setLoading(false);
+    }
+  };
   
   const addToCart = async (productId: string, quantity: number, options: Record<string, any> = {}) => {
+    console.log('addToCart called with productId:', productId, 'quantity:', quantity, 'options:', options); // Debug log
     if (!session) {
-      showLoginPrompt()
-      return false
+      console.log('User not logged in, showing login prompt'); // Debug log
+      showLoginPrompt();
+      return false;
     }
-    
+
     try {
-      setLoading(true)
+      setLoading(true);
+      console.log('Sending POST request to /api/cart/add'); // Debug log
       const res = await fetch('/api/cart/add', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ productId, quantity, selectedOptions: options })
-      })
-      
+        body: JSON.stringify({ productId, quantity, selectedOptions: options }),
+      });
+
       if (!res.ok) {
-        const error = await res.json()
-        throw new Error(error.message || 'Failed to add item to cart')
+        const error = await res.json();
+        console.error('Add to Cart API Error:', error); // Debug log
+        toast.error(error.message || 'Failed to add item to cart');
+        return false;
       }
-      
-      await fetchCart()
-      return true
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to add item to cart')
-      return false
+
+      console.log('Add to Cart API call successful, refreshing cart'); // Debug log
+      await fetchCart(true); // Force refresh the cart
+      window.dispatchEvent(new CustomEvent('cart-updated'));
+      toast.success('Item added to cart');
+      return true;
+    } catch (error) {
+      console.error('Add to Cart Exception:', error); // Debug log
+      toast.error('Failed to add item to cart');
+      return false;
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
   
   const updateCartItem = async (itemId: string, quantity: number) => {
+    console.log('updateCartItem called with itemId:', itemId, 'quantity:', quantity); // Debug log
     if (!session) {
-      showLoginPrompt()
-      return false
+      showLoginPrompt();
+      return false;
     }
-    
+
     try {
-      setLoading(true)
+      setLoading(true);
+      console.log('Sending PUT request to /api/cart/update'); // Debug log
       const res = await fetch('/api/cart/update', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ itemId, quantity })
-      })
-      
+        body: JSON.stringify({ itemId, quantity }),
+      });
+
       if (!res.ok) {
-        const error = await res.json()
-        throw new Error(error.message || 'Failed to update cart')
+        const error = await res.json();
+        console.error('Update Cart Item API Error:', error); // Debug log
+        toast.error(error.message || 'Failed to update cart');
+        return false;
       }
-      
-      await fetchCart()
-      return true
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to update cart')
-      return false
+
+      console.log('Update Cart Item API call successful, refreshing cart'); // Debug log
+      await fetchCart(true); // Force refresh the cart
+      return true;
+    } catch (error) {
+      console.error('Update Cart Item Exception:', error); // Debug log
+      toast.error('Failed to update cart');
+      return false;
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
   
   const removeCartItem = async (itemId: string) => {
+    console.log('removeCartItem called with itemId:', itemId); // Debug log
     if (!session) {
-      showLoginPrompt()
-      return false
+      console.log('User not logged in, showing login prompt'); // Debug log
+      showLoginPrompt();
+      return false;
     }
-    
+
     try {
-      setLoading(true)
+      setLoading(true);
+      console.log('Sending DELETE request to /api/cart/remove/:itemId'); // Debug log
       const res = await fetch(`/api/cart/remove/${itemId}`, {
-        method: 'DELETE'
-      })
-      
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
       if (!res.ok) {
-        const error = await res.json()
-        throw new Error(error.message || 'Failed to remove item from cart')
+        const error = await res.json();
+        console.error('Remove Cart Item API Error:', error); // Debug log
+        toast.error(error.message || 'Failed to remove item from cart');
+        return false;
       }
-      
-      await fetchCart()
-      return true
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to remove item')
-      return false
+
+      console.log('Remove Cart Item API call successful, refreshing cart'); // Debug log
+      await fetchCart(true); // Force refresh the cart
+      toast.success('Item removed from cart');
+      return true;
+    } catch (error) {
+      console.error('Remove Cart Item Exception:', error); // Debug log
+      toast.error('Failed to remove item from cart');
+      return false;
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
   
@@ -181,22 +218,26 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
     
     try {
-      setLoading(true)
+      setLoading(true);
+      console.log('Sending DELETE request to clear cart'); // Debug log
       const res = await fetch('/api/cart', {
-        method: 'DELETE'
-      })
-      
+        method: 'DELETE',
+      });
+
       if (!res.ok) {
-        throw new Error('Failed to clear cart')
+        throw new Error('Failed to clear cart');
       }
-      
-      setCart(null)
-      return true
+
+      console.log('Clear Cart API call successful, resetting cart state'); // Debug log
+      setCart(null); // Reset cart state
+      toast.success('Cart cleared successfully');
+      return true;
     } catch (error) {
-      toast.error('Failed to clear cart')
-      return false
+      console.error('Error clearing cart:', error); // Debug log
+      toast.error('Failed to clear cart');
+      return false;
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
   
@@ -224,7 +265,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
     updateCartItem,
     removeCartItem,
     clearCart,
-    showLoginPrompt
+    showLoginPrompt,
+    fetchCart // Expose fetchCart to consumers
   }
   
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>

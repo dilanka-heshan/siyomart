@@ -7,6 +7,7 @@ import { Trash2 } from 'lucide-react'
 import { useCart } from '@/app/providers/CartProvider'
 import { formatPrice } from '@/lib/utils'
 import { Loader } from '@/app/components/ui/Loader'
+import { toast } from 'react-hot-toast'
 
 interface CartItemProps {
   item: {
@@ -29,17 +30,42 @@ export default function CartItemCard({ item }: CartItemProps) {
   const { updateCartItem, removeCartItem } = useCart()
   
   const handleQuantityChange = async (quantity: number) => {
-    if (quantity < 1 || quantity > item.productId.stock) return
+    if (quantity < 1 || quantity > item.productId.stock) {
+      toast.error('Invalid quantity');
+      return;
+    }
     
     setIsUpdating(true)
-    await updateCartItem(item._id, quantity)
-    setIsUpdating(false)
+    try {
+      console.log('Updating quantity to:', quantity); // Debug log
+      const success = await updateCartItem(item._id, quantity)
+      if (!success) {
+        toast.error('Failed to update quantity')
+      }
+    } catch (error) {
+      console.error('Error updating cart:', error) // Debug log
+      toast.error('Failed to update quantity')
+    } finally {
+      setIsUpdating(false)
+    }
   }
   
   const handleRemove = async () => {
-    setIsUpdating(true)
-    await removeCartItem(item._id)
-    setIsUpdating(false)
+    console.log('Remove button clicked for item:', item._id); // Debug log
+    setIsUpdating(true);
+    try {
+      const success = await removeCartItem(item._id);
+      if (!success) {
+        toast.error('Failed to remove item');
+      } else {
+        console.log('Item removed successfully, refreshing UI'); // Debug log
+      }
+    } catch (error) {
+      console.error('Error removing item:', error); // Debug log
+      toast.error('Failed to remove item');
+    } finally {
+      setIsUpdating(false);
+    }
   }
   
   return (

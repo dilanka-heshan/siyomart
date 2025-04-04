@@ -9,12 +9,14 @@ import UserMenu from './UserMenu'
 import UserNotificationIndicator from './UserNotificationIndicator'
 import CategoryMenu from './CategoryMenu'
 import { useWishlist } from '@/app/providers/WishlistProvider'
+import { useCart } from '@/app/providers/CartProvider'
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const router = useRouter()
   const { wishlistItems } = useWishlist()
+  const { cart } = useCart()
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -105,7 +107,11 @@ export default function Navbar() {
             {/* Cart */}
             <Link href="/cart" className="relative p-2">
               <ShoppingCart className="h-5 w-5 text-gray-700" />
-              <span className="absolute top-0 right-0 h-4 w-4 flex items-center justify-center bg-amber-600 text-white rounded-full text-xs">0</span>
+              {(cart?.itemCount ?? 0) > 0 && (
+                <span className="absolute top-0 right-0 h-4 w-4 flex items-center justify-center bg-amber-600 text-white rounded-full text-xs">
+                  {cart?.itemCount ?? 0}
+                </span>
+              )}
             </Link>
             
             {/* User menu */}

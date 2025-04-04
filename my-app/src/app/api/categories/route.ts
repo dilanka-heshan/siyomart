@@ -6,6 +6,7 @@ export interface CategoryType {
   _id: string;
   name: string;
   slug: string;
+  description: string;
   image: string;
 }
 
@@ -39,9 +40,9 @@ export async function getCategories(): Promise<CategoryType[]> {
     
     // Fetch categories without the isActive filter that's causing issues
     const categories = await Category.find({})  // Removed isActive filter
-      .select('name slug image') 
+      .select('name slug image description') 
       .sort({ name: 1 })
-      .limit(10)
+      .limit(8)
       .lean();
     
     if (!categories || categories.length === 0) {

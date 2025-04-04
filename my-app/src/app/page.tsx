@@ -5,6 +5,9 @@ import { getFeaturedProducts } from './api/products/route'
 import ProductCard from '@/app/products/_components/ProductCard'
 import { Product } from '@/types/database'
 import { category } from '@/lib/db/models/Category'
+import HeroSection from './components/home/HeroSection';
+import CategoryGrid from './components/home/CategoryGrid';
+import { Cat } from 'lucide-react'
 
 
 export default async function Home() {
@@ -39,7 +42,7 @@ export default async function Home() {
   return (
     <>
       {/* Hero Section */}
-      <section className="relative h-[600px] flex items-center">
+{/* <section className="relative h-[600px] flex items-center">
         <div className="absolute inset-0 z-0">
           <Image
             src="https://images.unsplash.com/photo-1603899968034-12aadcdbfdc0?q=80&w=2071&auto=format&fit=crop"
@@ -68,9 +71,45 @@ export default async function Home() {
             </div>
           </div>
         </div>
+      </section> */}
+
+      {/* <section className="relative h-[600px] flex items-center">
+        <div className="absolute inset-0 z-0">
+          <Image
+            src="https://images.unsplash.com/photo-1603899968034-12aadcdbfdc0?q=80&w=2071&auto=format&fit=crop"
+            alt="Sri Lankan Handmade Product"
+            fill
+            className="object-cover brightness-75"
+            priority
+          />
+        </div>
+        <div className="container mx-auto px-4 z-10 text-white">
+          <div className="max-w-2xl">
+            <h1 className="text-5xl font-bold mb-4">Discover Authentic Sri Lankan Craftsmanship</h1>
+            <p className="text-xl mb-8">
+              Unique handmade products crafted with love and tradition, delivered to your doorstep worldwide.
+            </p>
+            <div className="flex gap-4 flex-wrap">
+              <Link href="/shop" className="btn-primary">
+                Shop Now
+              </Link>
+              <Link href="/about" className="bg-transparent border-2 border-white hover:bg-white hover:text-amber-800 text-white font-medium py-2 px-6 rounded-md transition duration-300">
+                Learn More
+              </Link>
+              <Link href="/register" className="bg-white text-amber-800 font-medium py-2 px-6 rounded-md transition duration-300 hover:bg-gray-100">
+                Join Us
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section> */}
+
+      <section>
+        <HeroSection />
+        <CategoryGrid categories={categories} />
       </section>
 
-      {/* Categories Section */}
+      {/* Categories Section
       <section className="py-16 bg-amber-50">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12">Explore Our Categories</h2>
@@ -94,7 +133,8 @@ export default async function Home() {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
+
 
       {/* Featured Products Section */}
       <section className="py-16">
@@ -130,7 +170,7 @@ export default async function Home() {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="relative h-96 rounded-lg overflow-hidden">
               <Image
-                src="https://images.unsplash.com/photo-1590586767908-20d6d1b3c9d1?q=80&w=2069&auto=format&fit=crop"
+                src="https://res.cloudinary.com/dyaleu8gi/image/upload/t_1024 x 576/v1743446837/anthony-lim-EZGPy_HOZWQ-unsplash_csrvno.jpg"
                 alt="Sri Lankan Artisans"
                 fill
                 className="object-cover"

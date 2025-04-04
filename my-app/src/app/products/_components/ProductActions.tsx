@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'react-hot-toast'
@@ -29,11 +29,18 @@ interface ProductActionsProps {
 export default function ProductActions({ product }: ProductActionsProps) {
   const [quantity, setQuantity] = useState(1);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const [isBuyingNow, setIsBuyingNow] = useState(false);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const { data: session } = useSession();
   const router = useRouter();
-  const { addToCart } = useCart();
+  const cart = useCart();
   const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
+  
+  // Debug log to check if cart provider is initialized correctly
+  useEffect(() => {
+    console.log("Cart provider initialized:", !!cart);
+    console.log("AddToCart function available:", !!cart.addToCart);
+  }, [cart]);
   
   // Check if the product is in the wishlist
   const productInWishlist = isInWishlist(product._id);
@@ -46,28 +53,40 @@ export default function ProductActions({ product }: ProductActionsProps) {
   
   // Add to cart handler
   const handleAddToCart = async () => {
+    console.log('Add to Cart button clicked'); // Debug log
+    if (!cart.addToCart) {
+      console.error('Cart functionality is not available'); // Debug log
+      toast.error('Cart functionality is not available');
+      return;
+    }
+
     if (!session) {
+      console.log('User not logged in, showing login prompt'); // Debug log
       setShowLoginPrompt(true);
       return;
     }
-    
+
     if (product.stock <= 0) {
-      toast.error("This product is out of stock");
+      console.error('Product is out of stock'); // Debug log
+      toast.error('This product is out of stock');
       return;
     }
-    
+
     setIsAddingToCart(true);
-    
     try {
-      const success = await addToCart(product._id, quantity);
-      
+      console.log('Calling cart.addToCart with productId:', product._id, 'quantity:', quantity); // Debug log
+      const success = await cart.addToCart(product._id, quantity);
       if (success) {
+        console.log('Add to Cart successful'); // Debug log
+        window.dispatchEvent(new CustomEvent('cart-updated'));
         toast.success(`Added ${product.name} to your cart`);
-        // Refresh router to update cart count in navbar
-        router.refresh();
+      } else {
+        console.error('Add to Cart failed'); // Debug log
+        toast.error("Couldn't add item to cart. Please try again.");
       }
     } catch (error) {
-      toast.error("Failed to add to cart. Please try again.");
+      console.error('Add to Cart Exception:', error); // Debug log
+      toast.error('Failed to add to cart. Please try again.');
     } finally {
       setIsAddingToCart(false);
     }
@@ -75,26 +94,43 @@ export default function ProductActions({ product }: ProductActionsProps) {
   
   // Buy now handler
   const handleBuyNow = async () => {
+    console.log('Buy Now button clicked'); // Debug log
+    if (!cart.addToCart) {
+      console.error('Cart functionality is not available'); // Debug log
+      toast.error('Cart functionality is not available');
+      return;
+    }
+
     if (!session) {
+      console.log('User not logged in, showing login prompt'); // Debug log
       setShowLoginPrompt(true);
       return;
     }
-    
+
     if (product.stock <= 0) {
-      toast.error("This product is out of stock");
+      console.error('Product is out of stock'); // Debug log
+      toast.error('This product is out of stock');
       return;
     }
-    
+
+    setIsBuyingNow(true);
     try {
-      // Add to cart first
-      const success = await addToCart(product._id, quantity);
-      
+      console.log('Calling cart.addToCart with productId:', product._id, 'quantity:', quantity); // Debug log
+      const success = await cart.addToCart(product._id, quantity);
       if (success) {
-        // Then redirect to checkout
-        router.push('/cart?checkout=true');
+        console.log('Buy Now successful'); // Debug log
+        window.dispatchEvent(new CustomEvent('cart-updated'));
+        toast.success('Proceeding to checkout...');
+        router.push('/checkout'); // Redirect to checkout
+      } else {
+        console.error('Buy Now failed'); // Debug log
+        toast.error('Failed to add product to cart.');
       }
     } catch (error) {
-      toast.error("Something went wrong. Please try again.");
+      console.error('Buy Now Exception:', error); // Debug log
+      toast.error('Something went wrong. Please try again.');
+    } finally {
+      setIsBuyingNow(false);
     }
   };
   
@@ -185,8 +221,11 @@ export default function ProductActions({ product }: ProductActionsProps) {
       {/* Add to Cart Button */}
       <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2">
         <Button 
-          onClick={handleAddToCart}
-          disabled={isAddingToCart || product.stock <= 0}
+          onClick={() => {
+            console.log("Button clicked directly"); // Debug log
+            handleAddToCart();
+          }}
+          disabled={isAddingToCart || isBuyingNow || product.stock <= 0}
           variant="outline" 
           className="flex-1"
         >
@@ -195,10 +234,10 @@ export default function ProductActions({ product }: ProductActionsProps) {
         
         <Button 
           onClick={handleBuyNow}
-          disabled={isAddingToCart || product.stock <= 0}
+          disabled={isAddingToCart || isBuyingNow || product.stock <= 0}
           className="flex-1"
         >
-          Buy Now
+          {isBuyingNow ? <Loader className="h-5 w-5" /> : 'Buy Now'}
         </Button>
       </div>
       

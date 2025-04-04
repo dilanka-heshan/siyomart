@@ -13,7 +13,7 @@ export default function AboutPage() {
       <section className="relative h-[60vh] md:h-[70vh] overflow-hidden">
         <div className="absolute inset-0">
           <Image 
-            src="https://images.unsplash.com/photo-1606196480025-27347b5ea8fa?q=80&w=2070&auto=format&fit=crop"
+            src="https://res.cloudinary.com/dyaleu8gi/image/upload/t_1024 x 576/v1743446880/anton-lecock-I6oHQAIyyCU-unsplash_d7lr1a.jpg"
             alt="Sri Lankan Craftmanship"
             fill
             priority
@@ -179,27 +179,27 @@ export default function AboutPage() {
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-16">Meet Our Team</h2>
           
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <div className="flex justify-center max-w-4xl mx-auto">
             {/* Team Member 1 */}
-            <div className="bg-white rounded-lg overflow-hidden shadow-md">
+            <div className="bg-white rounded-lg overflow-hidden shadow-md w-full max-w-sm mx-auto">
               <div className="h-64 relative">
                 <Image
-                  src="https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=1961&auto=format&fit=crop"
+                  src="https://res.cloudinary.com/dyaleu8gi/image/upload/t_1024 x 576/v1743691276/149291998_klqfzs.jpg"
                   alt="Founder"
                   fill
                   className="object-cover"
                 />
               </div>
               <div className="p-6">
-                <h3 className="font-bold text-xl mb-1">Amara Perera</h3>
+                <h3 className="font-bold text-xl mb-1">Dilanka Heshan</h3>
                 <p className="text-amber-600 mb-3">Founder & CEO</p>
                 <p className="text-gray-600 text-sm">
-                  With a background in sustainable development and a passion for Sri Lankan arts, Amara founded SiyoMart to create a bridge between artisans and global markets.
+                  With a background in sustainable development and a passion for Sri Lankan arts, Dilanka founded SiyoMart to create a bridge between artisans and global markets.
                 </p>
               </div>
             </div>
             
-            {/* Team Member 2 */}
+            {/* Team Member 2
             <div className="bg-white rounded-lg overflow-hidden shadow-md">
               <div className="h-64 relative">
                 <Image
@@ -216,9 +216,9 @@ export default function AboutPage() {
                   A respected designer with deep roots in Sri Lankan craft traditions, Nihal ensures that each product on SiyoMart meets our standards for quality and cultural authenticity.
                 </p>
               </div>
-            </div>
+            </div> */}
             
-            {/* Team Member 3 */}
+            {/* Team Member 3
             <div className="bg-white rounded-lg overflow-hidden shadow-md">
               <div className="h-64 relative">
                 <Image
@@ -235,7 +235,7 @@ export default function AboutPage() {
                   Having worked with rural communities for over a decade, Lakshmi builds and nurtures our relationships with artisans across the country, ensuring fair practices.
                 </p>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </section>

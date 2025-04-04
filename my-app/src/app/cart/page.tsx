@@ -11,11 +11,23 @@ import { Loader } from '@/app/components/ui/Loader'
 import CartItemCard from './_components/CartItemCard'
 import CartSummary from './_components/CartSummary'
 import EmptyCart from './_components/EmptyCart'
+import { toast } from 'react-hot-toast'
 
 export default function CartPage() {
   const { cart, loading, clearCart } = useCart()
   const { data: session, status } = useSession()
   const router = useRouter()
+  
+  // Handle clear cart functionality
+  const handleClearCart = async () => {
+    const confirmed = window.confirm("Are you sure you want to clear your cart?");
+    if (confirmed) {
+      const success = await clearCart();
+      if (success) {
+        toast.success("Cart cleared successfully");
+      }
+    }
+  }
   
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -46,13 +58,15 @@ export default function CartPage() {
     <div className="container mx-auto px-4 py-8 mt-8">
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-2xl font-bold">Your Shopping Cart</h1>
-        <Button 
-          variant="ghost" 
-          onClick={() => clearCart()}
-          className="text-sm text-red-600 hover:bg-red-50"
-        >
-          <Trash2 className="h-4 w-4 mr-1" /> Clear Cart
-        </Button>
+        {cart && cart.items.length > 0 && (
+          <Button 
+            variant="ghost" 
+            onClick={handleClearCart}
+            className="text-sm text-red-600 hover:bg-red-50"
+          >
+            <Trash2 className="h-4 w-4 mr-1" /> Clear Cart
+          </Button>
+        )}
       </div>
       
       <div className="flex flex-col lg:flex-row gap-8">

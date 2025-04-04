@@ -5,6 +5,7 @@ import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import { AuthProvider } from './providers/AuthProvider';
 import { WishlistProvider } from './providers/WishlistProvider';
+import { CartProvider } from './providers/CartProvider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -23,9 +24,11 @@ export default function RootLayout({
       <body className={inter.className}>
         <AuthProvider>
           <WishlistProvider>
-            <Navbar />
-            <main className="min-h-screen">{children}</main>
-            <Footer />
+            <CartProvider>
+              <Navbar />
+              <main className="min-h-screen">{children}</main>
+              <Footer />
+            </CartProvider>
           </WishlistProvider>
         </AuthProvider>
       </body>
