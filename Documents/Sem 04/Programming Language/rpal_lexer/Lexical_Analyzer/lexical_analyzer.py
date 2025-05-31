@@ -17,18 +17,15 @@ class MyToken:
         self.type = token_type
         self.value = value
 
-    # Getters for type and value
     def get_type(self):
         return self.type
 
     def get_value(self):
         return self.value
 
-
-
 def tokenize(input_str):
     tokens = []
-    keywords = {
+    patterns = {
         'COMMENT': r'//.*',
         'KEYWORD': r'(let|in|fn|where|aug|or|not|gr|ge|ls|le|eq|ne|true|false|nil|dummy|within|and|rec)\b',
         'STRING': r'\'(?:\\\'|[^\'])*\'',
@@ -38,21 +35,18 @@ def tokenize(input_str):
         'SPACES': r'[ \t\n]+',
         'PUNCTUATION': r'[();,]'
     }
-    
     while input_str:
         matched = False
-        for key, pattern in keywords.items():
+        for key, pattern in patterns.items():
             match = re.match(pattern, input_str)
             if match:
-                # print(key, match.group(0))
                 if key != 'SPACES':
                     if key == 'COMMENT':
-                        comment = match.group(0)
                         input_str = input_str[match.end():]
                         matched = True
                         break
                     else:
-                        token_type = getattr(TokenType, key)  # Get TokenType enum value
+                        token_type = getattr(TokenType, key)
                         if not isinstance(token_type, TokenType):
                             raise ValueError(f"Token type '{key}' is not a valid TokenType")
                         tokens.append(MyToken(token_type, match.group(0)))
@@ -64,6 +58,7 @@ def tokenize(input_str):
                 break
         if not matched:
             print("Error: Unable to tokenize input")
+            break
     return tokens
 
 #Example usage

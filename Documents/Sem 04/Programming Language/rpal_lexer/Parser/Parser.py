@@ -53,49 +53,41 @@ class Parser:
         self.E() 
         if self.tokens[0].type == TokenType.END_OF_TOKENS:
             return self.ast
-        else:
-            print("Parsing Faild...")
-            print("Reamining Unpharsed Token:")
-            for token in self.tokens:
-                print("<" + str(token.type) + ", " + token.value + ">")
-            return None
+        print("Parsing Failed...")
+        print("Remaining Unparsed Token:")
+        for token in self.tokens:
+            print(f"<{token.type}, {token.value}>")
+        return None
 
     def convert_ast_to_string_ast(self):
-        dots = ""
-        stack = []
-
+        dots, stack = "", []
         while self.ast:
             if not stack:
                 if self.ast[-1].no_of_children == 0:
                     self.add_strings(dots, self.ast.pop())
                 else:
-                    node = self.ast.pop()
-                    stack.append(node)
+                    stack.append(self.ast.pop())
             else:
                 if self.ast[-1].no_of_children > 0:
-                    node = self.ast.pop()
-                    stack.append(node)
+                    stack.append(self.ast.pop())
                     dots += "."
                 else:
                     stack.append(self.ast.pop())
                     dots += "."
-                    while stack[-1].no_of_children == 0:
+                    while stack and stack[-1].no_of_children == 0:
                         self.add_strings(dots, stack.pop())
-                        if not stack:
-                            break
+                        if not stack: break
                         dots = dots[:-1]
                         node = stack.pop()
                         node.no_of_children -= 1
                         stack.append(node)
-
-
         self.string_ast.reverse()
         return self.string_ast
 
     def add_strings(self, dots, node):
         if node.type in [NodeType.identifier, NodeType.integer, NodeType.string, NodeType.true_value,
                          NodeType.false_value, NodeType.nil, NodeType.dummy]:
-            self.string_ast.append(dots + "<" + node.type.name.upper() + ":" + node.value + ">")
+            self.string_ast.append(f"{dots}<{node.type.name.upper()}:{node.value}>")
         elif node.type == NodeType.fcn_form:
             self.string_ast.append(dots + "function_form")
         else:
@@ -345,7 +337,7 @@ class Parser:
 
     # Rators And Rands
     '''
-    R 	-> R Rn => 'gamma'
+    R 	-> Rn => 'gamma'
     		-> Rn ;
     
     R -> Rn ('gamma' Rn)*
