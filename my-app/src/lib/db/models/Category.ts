@@ -4,8 +4,8 @@ const categorySchema = new mongoose.Schema({
     name: { type: String, required: true },
     description: { type: String, required: true },
     slug: { type: String, required: true, unique: true },
-    parentCategory: { type: mongoose.Schema.Types.ObjectId, ref: 'category', default: null },
-    subCategories: [{ type: mongoose.Schema.Types.ObjectId, ref: 'category' }],
+    parentCategory: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', default: null },
+    subCategories: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Category' }],
     image: { type: String, required: true },
     productCount: { type: Number, default: 0 },
     isActive: { type: Boolean, default: true },
@@ -16,4 +16,4 @@ const categorySchema = new mongoose.Schema({
     collection: 'category' // Explicitly set the collection name to match your MongoDB
 });
 
-export default mongoose.models.category || mongoose.model('category', categorySchema);
+export default mongoose.models.Category || mongoose.model('Category', categorySchema);

@@ -2,12 +2,10 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import connectDB from '@/lib/db/connect';
-import Product from '@/lib/db/models/Product';
 import Category from '@/lib/db/models/Category';
 import User from '@/lib/db/models/User';
-import Story from '@/lib/db/models/Story';
 
-// GET /api/admin/products - Get all products for admin management
+// GET /api/admin/categories - Get all categories for admin management
 export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptions);
@@ -22,8 +20,6 @@ export async function GET(request: Request) {
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '10');
     const search = searchParams.get('search');
-    const category = searchParams.get('category');
-    const withoutStories = searchParams.get('withoutStories') === 'true';
 
     // Build query
     let query: any = {};
@@ -33,29 +29,20 @@ export async function GET(request: Request) {
         { description: { $regex: search, $options: 'i' } }
       ];
     }
-    if (category) {
-      query.category = category;
-    }
-    
-    if (withoutStories) {
-      // Find all product IDs that already have stories
-      const productsWithStories = await Story.distinct('productId');
-      query._id = { $nin: productsWithStories };
-    }
 
     // Execute query with pagination
     const skip = (page - 1) * limit;
-    const products = await Product.find(query)
-      .populate('categoryId', 'name slug')
-      .populate('OperatorId', 'name email')
+    const categories = await Category.find(query)
+      .populate('parentCategory', 'name')
+      .populate('subCategories', 'name')
       .skip(skip)
       .limit(limit)
-      .sort({ createdAt: -1 });
+      .sort({ displayOrder: 1, createdAt: -1 });
 
-    const total = await Product.countDocuments(query);
+    const total = await Category.countDocuments(query);
 
     return NextResponse.json({
-      products,
+      categories,
       pagination: {
         total,
         pages: Math.ceil(total / limit),
@@ -64,15 +51,15 @@ export async function GET(request: Request) {
       }
     });
   } catch (error) {
-    console.error('Error fetching products:', error);
+    console.error('Error fetching categories:', error);
     return NextResponse.json(
-      { message: 'Failed to fetch products' },
+      { message: 'Failed to fetch categories' },
       { status: 500 }
     );
   }
 }
 
-// POST /api/admin/products - Create new product (Admin only)
+// POST /api/admin/categories - Create new category (Admin only)
 export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions);
@@ -87,63 +74,78 @@ export async function POST(request: Request) {
     const {
       name,
       description,
-      category,
-      categoryId,
-      price,
-      discount = 0,
-      shipping_weight,
-      stock,
-      images = []
+      slug,
+      parentCategory = null,
+      image,
+      isActive = true,
+      displayOrder = 0,
+      metadata = {}
     } = body;
 
     // Validate required fields
-    if (!name || !description || !category || !categoryId || !price || !shipping_weight || stock === undefined) {
+    if (!name || !description || !slug || !image) {
       return NextResponse.json(
-        { message: 'Missing required fields' },
+        { message: 'Missing required fields: name, description, slug, and image are required' },
         { status: 400 }
       );
     }
 
-    // Verify category exists
-    const categoryExists = await Category.findById(categoryId);
-    if (!categoryExists) {
+    // Check if slug already exists
+    const existingCategory = await Category.findOne({ slug });
+    if (existingCategory) {
       return NextResponse.json(
-        { message: 'Category not found' },
+        { message: 'Category with this slug already exists' },
         { status: 400 }
       );
     }
 
-    // Create new product
-    const newProduct = new Product({
-      OperatorId: session.user.id,
+    // Verify parent category exists if provided
+    if (parentCategory) {
+      const parentExists = await Category.findById(parentCategory);
+      if (!parentExists) {
+        return NextResponse.json(
+          { message: 'Parent category not found' },
+          { status: 400 }
+        );
+      }
+    }
+
+    // Create new category
+    const newCategory = new Category({
       name,
       description,
-      category,
-      categoryId,
-      price: parseFloat(price),
-      discount: parseFloat(discount),
-      shipping_weight,
-      stock: parseInt(stock),
-      images,
-      rating: [],
-      reviews: []
+      slug,
+      parentCategory,
+      subCategories: [],
+      image,
+      productCount: 0,
+      isActive,
+      metadata,
+      displayOrder
     });
 
-    await newProduct.save();
+    await newCategory.save();
+
+    // If this category has a parent, add it to parent's subCategories
+    if (parentCategory) {
+      await Category.findByIdAndUpdate(
+        parentCategory,
+        { $addToSet: { subCategories: newCategory._id } }
+      );
+    }
     
-    // Populate the created product
-    await newProduct.populate('categoryId', 'name slug');
-    await newProduct.populate('OperatorId', 'name email');
+    // Populate the created category
+    await newCategory.populate('parentCategory', 'name');
 
     return NextResponse.json({
-      message: 'Product created successfully',
-      product: newProduct
+      message: 'Category created successfully',
+      category: newCategory
     }, { status: 201 });
 
   } catch (error) {
-    console.error('Error creating product:', error);
+    console.error('Error creating category:', error);
     return NextResponse.json(
-      { message: 'Failed to create product' },
+      { message: 'Failed to create category' },
       { status: 500 }
     );
   }
