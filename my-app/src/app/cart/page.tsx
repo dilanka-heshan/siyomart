@@ -15,7 +15,7 @@ import { toast } from 'react-hot-toast'
 
 export default function CartPage() {
   const { cart, loading, clearCart } = useCart()
-  const { data: session, status } = useSession()
+  const { status } = useSession()
   const router = useRouter()
   
   // Handle clear cart functionality

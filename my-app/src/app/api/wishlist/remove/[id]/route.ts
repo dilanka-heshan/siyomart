@@ -6,7 +6,7 @@ import connectDB from '@/lib/db/connect';
 import Wishlist from '@/lib/db/models/Wishlist';
 
 export async function DELETE(
-  request: Request,
+  _request: Request,
   { params }: { params: { id: string } }
 ) {
   try {

@@ -4,7 +4,7 @@ import Story from '@/lib/db/models/Story';
 
 // GET /api/stories/[productId] - Get story for a specific product
 export async function GET(
-  request: Request,
+  _request: Request,
   { params }: { params: { productId: string } }
 ) {
   try {

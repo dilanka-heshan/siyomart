@@ -206,8 +206,6 @@ export default function CheckoutPage() {
           throw new Error(errorMessage);
         }
         
-        const paymentResult = await paymentRes.json();
-        
         // 3. Clear the cart and redirect to confirmation page
         await clearCart();
         

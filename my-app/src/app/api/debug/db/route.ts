@@ -6,6 +6,14 @@ export async function GET() {
   try {
     await connectDB();
     
+    // Ensure the database connection is established
+    if (!mongoose.connection.db) {
+      return NextResponse.json(
+        { message: 'Database connection not established' },
+        { status: 500 }
+      );
+    }
+    
     // Get all collections in the database
     const collections = await mongoose.connection.db.listCollections().toArray();
     const dbName = mongoose.connection.db.databaseName;
@@ -13,7 +21,7 @@ export async function GET() {
     // Get counts for each collection
     const collectionData = await Promise.all(
       collections.map(async (collection) => {
-        const count = await mongoose.connection.db
+        const count = await mongoose.connection.db!
           .collection(collection.name)
           .countDocuments();
         return {
@@ -24,9 +32,9 @@ export async function GET() {
     );
 
     // Get a sample of the users collection if it exists
-    let userSample = [];
+    let userSample: any[] = [];
     if (collectionData.some(c => c.name === 'users')) {
-      userSample = await mongoose.connection.db
+      userSample = await mongoose.connection.db!
         .collection('users')
         .find({}, { projection: { password: 0 } })
         .limit(5)

@@ -5,7 +5,7 @@ import { getToken } from 'next-auth/jwt';
 
 // GET /api/products/[id] - Get a single product
 export async function GET(
-  request: Request,
+  _request: Request,
   { params }: { params: { id: string } }
 ) {
   try {

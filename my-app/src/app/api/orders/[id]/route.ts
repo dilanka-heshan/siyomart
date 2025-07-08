@@ -6,7 +6,7 @@ import Order from '@/lib/db/models/Order';
 
 // GET order by ID
 export async function GET(
-  request: Request,
+  _request: Request,
   { params }: { params: { id: string } }
 ) {
   try {

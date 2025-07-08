@@ -6,7 +6,7 @@ import Product from '@/lib/db/models/Product';
 
 // GET /api/reviews/[productId] - Get reviews for a product
 export async function GET(
-  request: Request,
+  _request: Request,
   { params }: { params: { productId: string } }
 ) {
   try {
