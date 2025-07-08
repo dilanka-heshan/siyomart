@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import connectDB from '@/lib/db/connect';
 import Category from '@/lib/db/models/Category';
-import User from '@/lib/db/models/User';
+// import User from '@/lib/db/models/User';
 
 // GET /api/admin/categories - Get all categories for admin management
 export async function GET(request: Request) {

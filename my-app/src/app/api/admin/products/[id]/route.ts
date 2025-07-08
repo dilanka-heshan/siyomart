@@ -4,11 +4,11 @@ import { authOptions } from '@/lib/auth';
 import connectDB from '@/lib/db/connect';
 import Product from '@/lib/db/models/Product';
 import Category from '@/lib/db/models/Category';
-import User from '@/lib/db/models/User';
+// import User from '@/lib/db/models/User';
 
 // GET /api/admin/products/[id] - Get single product
 export async function GET(
-  request: Request,
+  _request: Request,
   { params }: { params: { id: string } }
 ) {
   try {
@@ -123,7 +123,7 @@ export async function PUT(
 
 // DELETE /api/admin/products/[id] - Delete product
 export async function DELETE(
-  request: Request,
+  _request: Request,
   { params }: { params: { id: string } }
 ) {
   try {

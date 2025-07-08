@@ -4,7 +4,7 @@ import { authOptions } from '@/lib/auth';
 import connectDB from '@/lib/db/connect';
 import Product from '@/lib/db/models/Product';
 import Category from '@/lib/db/models/Category';
-import User from '@/lib/db/models/User';
+// import User from '@/lib/db/models/User';
 import Story from '@/lib/db/models/Story';
 
 // GET /api/admin/products - Get all products for admin management
