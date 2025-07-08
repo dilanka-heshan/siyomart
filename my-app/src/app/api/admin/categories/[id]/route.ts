@@ -8,7 +8,7 @@ import Category from '@/lib/db/models/Category';
 
 // GET /api/admin/categories/[id] - Get single category
 export async function GET(
-  request: Request,
+  _request: Request,
   { params }: { params: { id: string } }
 ) {
   try {
@@ -133,7 +133,7 @@ export async function PUT(
 
 // DELETE /api/admin/categories/[id] - Delete category
 export async function DELETE(
-  request: Request,
+  _request: Request,
   { params }: { params: { id: string } }
 ) {
   try {
