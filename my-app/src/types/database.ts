@@ -44,3 +44,19 @@ export interface Product {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface Category {
+  _id: string;
+  name: string;
+  slug: string;
+  description: string;
+  image: string;
+  parentCategory?: string | null;
+  subCategories?: string[];
+  productCount?: number;
+  isActive?: boolean;
+  metadata?: any;
+  displayOrder?: number;
+  createdAt: Date;
+  updatedAt: Date;
+}

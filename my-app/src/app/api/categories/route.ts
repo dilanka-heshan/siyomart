@@ -1,14 +1,9 @@
 import connectDB from '../../../lib/db/connect';
 import Category from '../../../lib/db/models/Category';
 import { NextResponse } from 'next/server';
+import { Category as CategoryType } from '@/types/database';
 
-export interface CategoryType {
-  _id: string;
-  name: string;
-  slug: string;
-  description: string;
-  image: string;
-}
+
 
 // New function to check if categories exist and add initial ones if needed
 export async function ensureCategories(): Promise<boolean> {
