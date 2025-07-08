@@ -4,7 +4,7 @@ import { ContactInquiry } from '@/lib/db/models/ContactInquiry'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth';
 
-export async function GET(request: Request) {
+export async function GET(_request: Request) {
   try {
     const session = await getServerSession(authOptions)
 

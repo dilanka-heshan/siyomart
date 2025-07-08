@@ -49,7 +49,7 @@ export async function POST(request: Request) {
 }
 
 // GET endpoint to fetch all inquiries (admin access only)
-export async function GET(request: Request) {
+export async function GET(_request: Request) {
   try {
     // In a real app, you would check for admin authentication here
     // For example: if (!isAdmin(request)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
