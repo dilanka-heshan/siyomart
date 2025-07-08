@@ -20,7 +20,7 @@
     "clsx": "^2.0.0",
     "lucide-react": "^0.294.0",
     "mongodb": "^5.9.0",
-    "mongoose": "^8.13.1",
+    "mongoose": "^8.16.2",
     "next": "^14.0.3",
     "next-auth": "^4.24.11",
     "nodemailer": "^6.10.0",
