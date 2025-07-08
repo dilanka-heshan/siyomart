@@ -18,7 +18,7 @@ export default function CategoryBreadcrumb({ categorySlug }: CategoryBreadcrumbP
 
   useEffect(() => {
     if (categorySlug) {
-      async function fetchCategoryName() {
+      const fetchCategoryName = async () => {
         try {
           const response = await fetch('/api/categories');
           if (!response.ok) throw new Error('Failed to fetch categories');
@@ -31,7 +31,7 @@ export default function CategoryBreadcrumb({ categorySlug }: CategoryBreadcrumbP
         } catch (error) {
           console.error('Error fetching category name:', error);
         }
-      }
+      };
       
       fetchCategoryName();
     }

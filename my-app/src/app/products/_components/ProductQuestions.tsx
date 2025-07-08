@@ -83,6 +83,7 @@ export default function ProductQuestions({ productId }: ProductQuestionsProps) {
     try {
       // In a real implementation, you'd make an API call to save the question
       // For now, we'll just update the local state
+      console.log('Submitting question for product:', productId);
       
       const question: Question = {
         _id: Date.now().toString(),

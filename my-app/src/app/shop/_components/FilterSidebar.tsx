@@ -210,7 +210,7 @@ export default function FilterSidebar() {
           max={100000} 
           initialMin={priceRange.min} 
           initialMax={priceRange.max}
-          onChange={handlePriceChange}
+          onChangeAction={handlePriceChange}
         />
         <div className="flex justify-between mt-2 text-sm text-gray-600">
           <span>Rs. {priceRange.min.toLocaleString()}</span>

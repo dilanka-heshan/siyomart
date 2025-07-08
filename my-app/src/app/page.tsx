@@ -7,7 +7,7 @@ import { Product } from '@/types/database'
 import { category } from '@/lib/db/models/Category'
 import HeroSection from './components/home/HeroSection';
 import CategoryGrid from './components/home/CategoryGrid';
-import { Cat } from 'lucide-react'
+
 
 
 export default async function Home() {

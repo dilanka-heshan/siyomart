@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { CheckCircle, ArrowLeft, Truck, Package, Info, Phone, Mail, MapPin } from 'lucide-react'
+import { CheckCircle, Truck, Package, Info, Phone, Mail, MapPin } from 'lucide-react'
 import { Button } from '@/app/components/ui/Button'
 import { Loader } from '@/app/components/ui/Loader'
 import { formatPrice } from '@/lib/utils'
@@ -53,7 +53,7 @@ interface OrderDetails {
 }
 
 export default function OrderConfirmationPage({ params }: { params: { id: string } }) {
-  const { data: session, status } = useSession()
+  const { status } = useSession()
   const router = useRouter()
   const [order, setOrder] = useState<OrderDetails | null>(null)
   const [loading, setLoading] = useState(true)

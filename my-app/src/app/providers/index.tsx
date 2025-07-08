@@ -1,7 +1,7 @@
 'use client'
 
 import { ReactNode } from 'react'
-import AuthProvider from './AuthProvider'
+import { AuthProvider } from './AuthProvider'
 import { CartProvider } from './CartProvider'
 import { Toaster } from 'react-hot-toast'
 

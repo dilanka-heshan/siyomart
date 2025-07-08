@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useSession, signOut } from 'next-auth/react'
-import { Menu, X, Search, User, LogOut, ShoppingBag, Heart } from 'lucide-react'
+import { Menu, X, Search, User, LogOut } from 'lucide-react'
 import CartIcon from './CartIcon'
 import { useRouter } from 'next/navigation'
 

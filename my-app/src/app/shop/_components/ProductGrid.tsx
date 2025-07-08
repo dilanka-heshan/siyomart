@@ -74,22 +74,6 @@ export default function ProductGrid({
     fetchProducts();
   }, [category, page, sort, minPrice, maxPrice, search]);
 
-  const handlePageChange = (newPage: number) => {
-    // Build the current URL parameters
-    const params = new URLSearchParams();
-    if (category) params.set('category', category);
-    if (sort) params.set('sort', sort);
-    if (minPrice !== undefined) params.set('minPrice', minPrice.toString());
-    if (maxPrice !== undefined) params.set('maxPrice', maxPrice.toString());
-    if (search) params.set('search', search);
-    
-    // Set the new page
-    params.set('page', newPage.toString());
-    
-    // Navigate to the new URL
-    router.push(`/shop?${params.toString()}`);
-  };
-  
   if (loading) {
     return (
       <div className="flex justify-center items-center h-40">
@@ -158,7 +142,6 @@ export default function ProductGrid({
           <Pagination
             currentPage={page}
             totalPages={totalPages}
-            onPageChange={handlePageChange}
           />
         </div>
       )}

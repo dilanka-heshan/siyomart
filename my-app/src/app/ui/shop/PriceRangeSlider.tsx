@@ -7,7 +7,7 @@ interface PriceRangeSliderProps {
   max: number;
   initialMin?: number;
   initialMax?: number;
-  onChange: (min: number, max: number) => void;
+  onChangeAction: (min: number, max: number) => void;
 }
 
 export default function PriceRangeSlider({
@@ -15,7 +15,7 @@ export default function PriceRangeSlider({
   max,
   initialMin = min,
   initialMax = max,
-  onChange
+  onChangeAction
 }: PriceRangeSliderProps) {
   const [minVal, setMinVal] = useState(initialMin);
   const [maxVal, setMaxVal] = useState(initialMax);
@@ -57,13 +57,13 @@ export default function PriceRangeSlider({
   // Debounce the onChange event
   useEffect(() => {
     const timer = setTimeout(() => {
-      onChange(minVal, maxVal);
+      onChangeAction(minVal, maxVal);
     }, 500);
     
     return () => {
       clearTimeout(timer);
     };
-  }, [minVal, maxVal, onChange]);
+  }, [minVal, maxVal, onChangeAction]);
 
   return (
     <div className="relative h-8">

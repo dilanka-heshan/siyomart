@@ -7,7 +7,7 @@ import Link from 'next/link'
 import { Bell } from 'lucide-react'
 
 export default function UserNotificationIndicator() {
-  const { data: session, status } = useSession()
+  const { status } = useSession()
   const pathname = usePathname()
   const [unreadCount, setUnreadCount] = useState(0)
   const [isLoading, setIsLoading] = useState(false)

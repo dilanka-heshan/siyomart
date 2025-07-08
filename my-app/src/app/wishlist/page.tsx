@@ -14,7 +14,7 @@ import { formatPrice } from '@/lib/utils'
 import toast from 'react-hot-toast'
 
 export default function WishlistPage() {
-  const { data: session, status } = useSession()
+  const { status } = useSession()
   const router = useRouter()
   const { wishlistItems, isLoading, removeFromWishlist } = useWishlist()
   const { addToCart } = useCart()

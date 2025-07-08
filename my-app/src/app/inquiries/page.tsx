@@ -18,7 +18,7 @@ interface ContactInquiry {
 }
 
 export default function InquiriesPage() {
-  const { data: session, status } = useSession()
+  const { status } = useSession()
   const router = useRouter()
   
   const [inquiries, setInquiries] = useState<ContactInquiry[]>([])

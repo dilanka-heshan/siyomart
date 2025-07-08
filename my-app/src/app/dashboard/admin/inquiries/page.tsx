@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { 
-  Mail, Phone, Calendar, Clock, RefreshCw, Search,
-  CheckCircle, XCircle, AlertTriangle, Inbox, Send,
+  Mail, Phone, Calendar, RefreshCw, Search,
+   AlertTriangle, Inbox, Send,
   Filter, ArrowLeft, MessageSquare
 } from 'lucide-react'
 

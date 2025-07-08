@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
 import { Search, ShoppingCart, Menu, X, Heart } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import UserMenu from './UserMenu'

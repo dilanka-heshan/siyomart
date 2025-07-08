@@ -77,7 +77,7 @@ export default function ProductReviews({ productId, initialReviews }: ProductRev
         photos: photoUrls,
       };
       
-      const result = await submitProductReview(productId, reviewData);
+      await submitProductReview(productId, reviewData);
       
       // In a real implementation, the response would include the full review object
       // Here we're creating a dummy review object

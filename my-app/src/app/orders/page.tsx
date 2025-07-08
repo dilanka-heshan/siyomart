@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Package, ShoppingBag, ArrowRight, Truck, AlertCircle } from 'lucide-react'
+import { Package, ShoppingBag, ArrowRight } from 'lucide-react'
 import { Button } from '@/app/components/ui/Button'
 import { Loader } from '@/app/components/ui/Loader'
 import { formatPrice } from '@/lib/utils'
@@ -28,7 +28,7 @@ interface Order {
 }
 
 export default function OrdersPage() {
-  const { data: session, status } = useSession()
+  const { status } = useSession()
   const router = useRouter()
   const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)

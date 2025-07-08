@@ -3,7 +3,7 @@
 import { useState, useEffect, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
-import { CloudArrowUpIcon } from '@heroicons/react/24/outline';
+
 
 interface Product {
   _id: string;

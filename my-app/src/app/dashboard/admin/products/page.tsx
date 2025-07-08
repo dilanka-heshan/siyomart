@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { Plus, Search, Edit, Trash2, Eye, Filter, Package, Tag } from 'lucide-react';
+import { Plus, Search, Edit, Trash2, Package, Tag } from 'lucide-react';
 import { Button } from '@/app/components/ui/Button';
 import { Input } from '@/app/components/ui/Input';
 import { Select } from '@/app/components/ui/Select';
@@ -12,7 +12,8 @@ import ProductForm from '@/app/components/admin/ProductForm';
 import CategoryForm from '@/app/components/admin/CategoryForm';
 import toast from 'react-hot-toast';
 
-interface Product {
+// Product type for API responses (with populated fields)
+interface ProductWithPopulatedFields {
   _id: string;
   name: string;
   description: string;
@@ -34,14 +35,43 @@ interface Product {
   };
 }
 
+// Product type for form (matches ProductForm's expected structure)
+interface Product {
+  _id?: string;
+  name: string;
+  description: string;
+  category: string;
+  categoryId: string;
+  price: number;
+  discount: number;
+  shipping_weight: string;
+  stock: number;
+  images: string[];
+}
+
 interface Category {
   _id: string;
   name: string;
   description: string;
   slug: string;
+  image?: string;
+  parentCategory?: string;
   isActive: boolean;
   productCount: number;
+  displayOrder?: number;
   createdAt: string;
+}
+
+// Category type for form (matches CategoryForm's expected structure)
+interface CategoryFormData {
+  _id?: string;
+  name: string;
+  description: string;
+  slug: string;
+  parentCategory?: string;
+  image: string;
+  isActive: boolean;
+  displayOrder: number;
 }
 
 export default function AdminProductsPage() {
@@ -50,7 +80,7 @@ export default function AdminProductsPage() {
   
   // State management
   const [activeTab, setActiveTab] = useState<'products' | 'categories'>('products');
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<ProductWithPopulatedFields[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   
@@ -64,7 +94,7 @@ export default function AdminProductsPage() {
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | undefined>();
-  const [editingCategory, setEditingCategory] = useState<Category | undefined>();
+  const [editingCategory, setEditingCategory] = useState<CategoryFormData | undefined>();
 
   // Authentication check
   useEffect(() => {
@@ -192,8 +222,13 @@ export default function AdminProductsPage() {
   };
 
   // Product actions
-  const handleEditProduct = (product: Product) => {
-    setEditingProduct(product);
+  const handleEditProduct = (product: ProductWithPopulatedFields) => {
+    // Transform the product data to match the form's expected structure
+    const transformedProduct: Product = {
+      ...product,
+      categoryId: product.categoryId._id,
+    };
+    setEditingProduct(transformedProduct);
     setIsProductModalOpen(true);
   };
 
@@ -220,7 +255,18 @@ export default function AdminProductsPage() {
 
   // Category actions
   const handleEditCategory = (category: Category) => {
-    setEditingCategory(category);
+    // Transform the category data to match the form's expected structure
+    const transformedCategory: CategoryFormData = {
+      _id: category._id,
+      name: category.name,
+      description: category.description,
+      slug: category.slug,
+      parentCategory: category.parentCategory || '',
+      image: category.image || '',
+      isActive: category.isActive,
+      displayOrder: category.displayOrder || 0,
+    };
+    setEditingCategory(transformedCategory);
     setIsCategoryModalOpen(true);
   };
 
