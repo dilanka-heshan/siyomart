@@ -3,15 +3,14 @@ import Image from 'next/image'
 import { getCategories } from '@/lib/services/categoryService'
 import { getFeaturedProducts } from '@/lib/services/productService';
 import ProductCard from '@/app/products/_components/ProductCard'
-import { Product } from '@/types/database'
-import { category } from '@/lib/db/models/Category'
+import { Product, Category } from '@/types/database'
 import HeroSection from './components/home/HeroSection';
 import CategoryGrid from './components/home/CategoryGrid';
 
 
 
 export default async function Home() {
-  let categories: category[] = [];
+  let categories: Category[] = [];
   let featuredProducts: Product[] = [];
   let error: string | null = null;
 

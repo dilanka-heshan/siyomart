@@ -21,7 +21,7 @@ interface Story {
 export default function AdminStoriesPage() {
   const [stories, setStories] = useState<Story[]>([]);
   const [loading, setLoading] = useState(true);
-  // const router = useRouter();
+  const router = useRouter();
 
   useEffect(() => {
     const fetchStories = async () => {

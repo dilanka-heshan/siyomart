@@ -6,10 +6,10 @@ if (!MONGODB_URI) {
   throw new Error('Please define the MONGODB_URI environment variable');
 }
 
-let cached = global.mongoose;
+let cached = (global as any).mongoose;
 
 if (!cached) {
-  cached = global.mongoose = { conn: null, promise: null };
+  cached = (global as any).mongoose = { conn: null, promise: null };
 }
 
 async function connectDB() {
@@ -28,7 +28,7 @@ async function connectDB() {
 
     cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
       console.log('Connected to MongoDB successfully!');
-      console.log('Database:', mongoose.connection.db.databaseName);
+      // console.log('Database:', mongoose.connection.db.databaseName);
       console.log('Host:', mongoose.connection.host);
       return mongoose;
     });

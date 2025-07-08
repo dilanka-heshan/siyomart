@@ -13,10 +13,10 @@ if (!MONGODB_URI) {
  * in development. This prevents connections growing exponentially
  * during API Route usage.
  */
-let cached = global.mongoose
+let cached = (global as any).mongoose
 
 if (!cached) {
-  cached = global.mongoose = { conn: null, promise: null }
+  cached = (global as any).mongoose = { conn: null, promise: null }
 }
 
 export async function connectToDatabase() {
@@ -35,7 +35,7 @@ export async function connectToDatabase() {
 
     cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
       console.log('Connected to MongoDB successfully!')
-      console.log('Database:', mongoose.connection.db.databaseName)
+      // console.log('Database:', mongoose.connection.db.databaseName)
       console.log('Host:', mongoose.connection.host)
       return mongoose
     })
