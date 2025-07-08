@@ -4,10 +4,10 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-import category from '@/lib/db/models/Category';
+import { Category } from '@/types/database';
 
 interface CategoryGridProps {
-  categories: category[];
+  categories: Category[];
 }
 
 export default function CategoryGrid({ categories }: CategoryGridProps) {

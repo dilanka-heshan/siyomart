@@ -7,7 +7,6 @@ import {
   Settings, 
   BarChart, 
   Tag, 
-  MessageSquare,
   Inbox
 } from 'lucide-react'
 

@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
 import { useSession, signOut } from 'next-auth/react'
 import { Menu, X, Search, User, LogOut, ShoppingBag, Heart } from 'lucide-react'
 import CartIcon from './CartIcon'
