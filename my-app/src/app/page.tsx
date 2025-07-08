@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { getCategories } from './api/categories/route'
+import { getCategories } from '@/lib/services/categoryService'
 import { getFeaturedProducts } from './api/products/route'
 import ProductCard from '@/app/products/_components/ProductCard'
 import { Product } from '@/types/database'
