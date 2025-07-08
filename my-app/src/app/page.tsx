@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { getCategories } from '@/lib/services/categoryService'
-import { getFeaturedProducts } from './api/products/route'
+import { getFeaturedProducts } from '@/lib/services/productService';
 import ProductCard from '@/app/products/_components/ProductCard'
 import { Product } from '@/types/database'
 import { category } from '@/lib/db/models/Category'

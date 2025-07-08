@@ -76,41 +76,6 @@ export async function GET(request: Request) {
   }
 }
 
-// Helper function to get featured products
-export async function getFeaturedProducts(limit = 4) {
-  try {
-    console.log('Starting getFeaturedProducts...');
-    await connectDB();
-    console.log('Database connected successfully');
-    
-    // Log the query we're about to make
-    console.log('Querying products with:', { 
-      stock: { $gt: 0 },
-      sort: { 'rating.value': -1, createdAt: -1 },
-      limit 
-    });
-    
-    const products = await Product.find({ stock: { $gt: 0 } })
-      .sort({ 'rating.value': -1, createdAt: -1 })
-      .limit(limit)
-      .populate('OperatorId', 'name')
-      .lean();
-
-    console.log('Raw products from DB:', products);
-    
-    if (!products || products.length === 0) {
-      console.log('No products found');
-      return [];
-    }
-
-    return JSON.parse(JSON.stringify(products));
-
-  } catch (error) {
-    console.error('Error fetching featured products:', error);
-    return [];
-  }
-}
-
 // POST /api/products - Create new product
 export async function POST(request: Request) {
   try {
