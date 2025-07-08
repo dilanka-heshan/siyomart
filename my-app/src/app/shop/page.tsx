@@ -3,7 +3,7 @@ import ProductGrid from './_components/ProductGrid';
 import FilterSidebar from './_components/FilterSidebar';
 import SortingControls from './_components/SortingControls';
 import { Metadata } from 'next';
-import { getCategories } from '@/app/api/categories/route';
+import { getCategories } from '@/lib/services/categoryService'
 import CategoryBreadcrumb from '@/app/components/ui/CategoryBreadcrumb';
 
 export const metadata: Metadata = {

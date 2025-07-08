@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 import { Metadata } from 'next';
-import { getCategories } from '@/app/api/categories/route';
+import { getCategories } from '@/lib/services/categoryService'
 
 export async function generateMetadata(
   { params }: { params: { slug: string } }
