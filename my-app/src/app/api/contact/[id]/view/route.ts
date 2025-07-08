@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { connectToDatabase } from '@/lib/db/connection'
 import { ContactInquiry } from '@/lib/db/models/ContactInquiry'
 import { getServerSession } from 'next-auth/next'
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { authOptions } from '@/lib/auth';
 
 export async function POST(
   request: Request,
