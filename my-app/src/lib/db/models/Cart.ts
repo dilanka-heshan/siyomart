@@ -55,6 +55,6 @@ const CartSchema = new mongoose.Schema({
 });
 
 // Create or update model
-const Cart = mongoose.models.Cart || mongoose.model('Cart', CartSchema);
+const Cart = mongoose.models?.Cart || mongoose.model('Cart', CartSchema);
 
 export default Cart;

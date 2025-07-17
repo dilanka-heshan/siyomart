@@ -70,5 +70,7 @@ const productSchema = new Schema({
   collection: 'product'
 });
 
+// Ensure mongoose models object exists before accessing it
+const Product = mongoose.models?.Product || mongoose.model('Product', productSchema);
 
-export default mongoose.models.Product || mongoose.model('Product', productSchema);
+export default Product;

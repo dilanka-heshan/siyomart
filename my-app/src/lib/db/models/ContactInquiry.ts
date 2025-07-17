@@ -60,4 +60,4 @@ const contactInquirySchema = new Schema({
 })
 
 // Prevent multiple models initialization
-export const ContactInquiry = mongoose.models.ContactInquiry || mongoose.model('ContactInquiry', contactInquirySchema)
+export const ContactInquiry = mongoose.models?.ContactInquiry || mongoose.model('ContactInquiry', contactInquirySchema)

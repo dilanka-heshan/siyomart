@@ -1,11 +1,5 @@
 import mongoose from 'mongoose';
 
-const MONGODB_URI = process.env.MONGODB_URI!;
-
-if (!MONGODB_URI) {
-  throw new Error('Please define the MONGODB_URI environment variable');
-}
-
 let cached = (global as any).mongoose;
 
 if (!cached) {
@@ -13,6 +7,22 @@ if (!cached) {
 }
 
 async function connectDB() {
+  // Check environment variable at runtime, not at module load time
+  const MONGODB_URI = process.env.MONGODB_URI;
+  
+  // Debug environment variables
+  console.log('Environment check:', {
+    NODE_ENV: process.env.NODE_ENV,
+    MONGODB_URI_EXISTS: !!MONGODB_URI,
+    MONGODB_URI_LENGTH: MONGODB_URI?.length,
+    MONGODB_URI_PREVIEW: MONGODB_URI?.substring(0, 20) + '...'
+  });
+
+  if (!MONGODB_URI) {
+    console.error('Available environment variables:', Object.keys(process.env).filter(key => key.includes('MONGO')));
+    throw new Error('Please define the MONGODB_URI environment variable');
+  }
+
   if (cached.conn) {
     console.log('Using existing MongoDB connection');
     return cached.conn;

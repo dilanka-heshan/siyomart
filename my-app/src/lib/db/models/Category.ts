@@ -16,4 +16,4 @@ const categorySchema = new mongoose.Schema({
     collection: 'category' // Explicitly set the collection name to match your MongoDB
 });
 
-export default mongoose.models.Category || mongoose.model('Category', categorySchema);
+export default mongoose.models?.Category || mongoose.model('Category', categorySchema);

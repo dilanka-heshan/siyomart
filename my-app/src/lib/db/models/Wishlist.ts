@@ -31,6 +31,6 @@ const WishlistSchema = new Schema<IWishlist>(
 WishlistSchema.index({ userId: 1 }, { unique: true });
 
 // Check if the model is already defined to prevent mongoose overwrite model error
-const Wishlist = mongoose.models.Wishlist || mongoose.model<IWishlist>('Wishlist', WishlistSchema);
+const Wishlist = mongoose.models?.Wishlist || mongoose.model<IWishlist>('Wishlist', WishlistSchema);
 
 export default Wishlist;

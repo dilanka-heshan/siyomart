@@ -2,7 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { formatPrice } from '@/lib/utils';
-import { Heart, Star, ShoppingCart } from 'lucide-react';
+import { Star, ShoppingCart } from 'lucide-react';
 import { WishlistButton } from '@/app/components/ui/WishlistButton';
 
 interface ProductCardProps {

@@ -52,4 +52,4 @@ const StorySchema = new Schema(
   }
 );
 
-export default mongoose.models.Story || mongoose.model<StoryDocument>('Story', StorySchema);
+export default mongoose.models?.Story || mongoose.model<StoryDocument>('Story', StorySchema);
