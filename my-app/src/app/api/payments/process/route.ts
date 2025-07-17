@@ -6,9 +6,18 @@ import Payment from '@/lib/db/models/Payment';
 import Order from '@/lib/db/models/Order';
 import Stripe from 'stripe';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2025-02-24.acacia'
-});
+// Initialize Stripe only when needed to avoid build-time environment variable issues
+function getStripeInstance() {
+  const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
+  
+  if (!stripeSecretKey) {
+    throw new Error('STRIPE_SECRET_KEY environment variable is not set');
+  }
+  
+  return new Stripe(stripeSecretKey, {
+    apiVersion: '2025-02-24.acacia'
+  });
+}
 
 export async function POST(request: Request) {
   try {
@@ -54,6 +63,7 @@ export async function POST(request: Request) {
     if (paymentMethod === 'Stripe') {
       // Create a payment intent with Stripe
       try {
+        const stripe = getStripeInstance();
         const paymentIntent = await stripe.paymentIntents.create({
           amount: Math.round(amount * 100), // Stripe expects amount in cents
           currency: 'usd',

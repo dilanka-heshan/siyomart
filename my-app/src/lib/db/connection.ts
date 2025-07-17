@@ -1,11 +1,16 @@
 import mongoose from 'mongoose'
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/siyomart'
-
-if (!MONGODB_URI) {
-  throw new Error(
-    'Please define the MONGODB_URI environment variable inside .env.local'
-  )
+// Don't check environment variables at module load time to avoid build issues
+function getMongoDBURI() {
+  const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/siyomart'
+  
+  if (!MONGODB_URI) {
+    throw new Error(
+      'Please define the MONGODB_URI environment variable inside .env.local'
+    )
+  }
+  
+  return MONGODB_URI;
 }
 
 /**
@@ -30,6 +35,8 @@ export async function connectToDatabase() {
       bufferCommands: false,
     }
 
+    const MONGODB_URI = getMongoDBURI();
+    
     console.log('Creating new MongoDB connection...')
     console.log('Connecting to database:', new URL(MONGODB_URI).pathname.substring(1))
 
