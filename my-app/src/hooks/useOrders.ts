@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
 
 interface OrderItem {
@@ -55,7 +54,7 @@ interface PaymentData {
 
 export function useOrders() {
   const [loading, setLoading] = useState(false)
-  const router = useRouter()
+
   
   // Create a new order
   const createOrder = async (orderData: OrderData): Promise<string | null> => {
